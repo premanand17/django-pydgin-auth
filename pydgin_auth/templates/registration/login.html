@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block extra_js %}
+//set login link
+                var current_path =  window.location.pathname;
+                console.log(current_path);
+                if(current_path === undefined || current_path == null || current_path.length <= 0 || current_path === '/' || current_path === '/accounts/login/'){
+                current_path = "/human_GRCh38/";
+                }
+                else{
+                console.log("not null and not undefined " + current_path);
+                }
+                var current_login_link = "/accounts/login?next="+current_path;
+                $("#login_link").attr("href", current_login_link);
+                console.log(current_login_link);
+{% endblock extra_js %}
+
+{% block content %}
+
+    {% if form.errors %}
+        <p>The username and password provided is not valid/recognised. Please try again with valid credentials.</p>
+    {% endif %}
+
+	<form id="login_form" method="POST" action="{% url 'accounts:django.contrib.auth.views.login' %}">
+     {% csrf_token %}
+        <table>
+            <tr>
+                <td>{{ form.username.label_tag }}</td>
+                <td>{{ form.username }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.password.label_tag }}</td>
+                <td>{{ form.password }}</td>
+            </tr>
+        </table>
+
+        <input type="submit" value="login" />
+        <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+
+<br>
+New users, please <a href="/accounts/register">Register</a> by filling a simple form
+<br>
+If you forgotten your password, please <a href="/accounts/user/password/reset/">reset password</a> by filling a simple form
+
+{% endblock %}

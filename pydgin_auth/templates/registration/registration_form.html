@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block header %}
+ <script language="javascript" type="text/javascript">
+$(document).ready(function() {
+                //for registration form
+                $('#id_is_terms_agreed').click(function() {
+        		 console.log('is terms clicked');
+        		if ($(this).is(':checked')) {
+           		 $('#register').removeAttr('disabled');
+           		 $('#register').removeClass("commandExButtonDisabled");
+
+       				 } else {
+            	$('#register').attr('disabled', 'disabled');
+            	$('#register').addClass("commandExButtonDisabled");
+       			 }
+   				 });
+});    
+</script>
+
+<style type="text/css">
+/*Style for terms & conditions */
+
+div.terms_n_conditions { 
+	height:200px; 
+	border:1px solid #ccc; 
+	background:#f2f2f2; 
+	overflow-x:hidden; 
+	overflow-y:auto; 
+	font-size: medium; 
+}
+
+.commandExButtonDisabled {
+    color: gray;
+}
+
+</style>
+{% endblock header%}
+
+
+{% block title %}Register{% endblock %}
+{% block content %}
+
+
+<h2>New User Registration</h2>
+
+	<form method="POST" action="/accounts/register/">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <td>{{ form.username.label_tag }}</td>
+                <td>{{ form.username }}<span class="helptext"> Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.</span> </td>
+            </tr>
+            <tr>  
+                <td></td>  
+                <td>{{ form.username.errors }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.email.label_tag }}</td>
+                <td>{{ form.email }}</td>
+            </tr>
+             <tr>  
+                <td></td>  
+                <td>{{ form.email.errors }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.password1.label_tag }}</td>
+                <td>{{ form.password1 }}</td>
+           </tr>
+           <tr>  
+                <td></td>  
+                <td>{{ form.password1.errors }}</td>
+            </tr>
+           
+		   <tr>
+                <td>{{ form.password2.label_tag }}</td>
+                <td>{{ form.password2 }}<span class="helptext"> Enter the same password as above, for verification.</span></td>
+           </tr>
+            <tr>  
+                <td></td>  
+                <td>{{ form.password2.errors }}</td>
+            </tr>
+            
+            <tr>
+		   <td colspan="4">Please read the data access agreement below, select the check-box to agree and click the 'Register and Log In' button.</td>
+		   <td></td>
+	        </tr>
+	        
+	        <tr>
+		    <td></td>
+		     <td>
+		     <div id="terms_conditions_text" class="terms_n_conditions" style="padding: 10px;"> 
+		     {{ terms_n_condition|safe }} 
+		     </div>
+		     </td>
+	        </tr>
+	          
+            <tr>
+            <td>{{ form.is_terms_agreed.label_tag }}</td>
+            <td>{{ form.is_terms_agreed }}</td>
+            </tr>
+            
+             <tr>  
+                <td></td>  
+                <td>{{ form.is_terms_agreed.errors }}</td>
+            </tr>
+           
+        </table>
+
+        <input id="register" type="submit" value="Register and Login" disabled="disabled" class="commandExButtonDisabled"/>
+     
+    </form>
+ 
+ {% endblock %}

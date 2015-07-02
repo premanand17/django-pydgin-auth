@@ -1,0 +1,13 @@
+ {% if user.is_authenticated %}
+    {% load permissions_tag %}
+	{% if user|has_group:"DIL-ADMIN" %}
+	<li><a href="/admin">Admin</a></li>
+	{% endif %}
+	  	
+  	<li><a id='logout_link' href="/accounts/logout">Logout ({{ user }})</a></li>
+  	
+  	<li><a id='profile_link' href="/accounts/profile">MyProfile</a></li>
+{% else %}
+	<li><a id='login_link' href="/accounts/login?next=/human_GRCh38/" %}/">Login</a></li>
+{% endif %}
+
