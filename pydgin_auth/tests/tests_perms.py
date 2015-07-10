@@ -1,6 +1,5 @@
 from django.test import TestCase
 from django.db import router
-from pprint import pprint
 from django.contrib.auth.models import User, Group
 from django.test.client import RequestFactory, Client
 

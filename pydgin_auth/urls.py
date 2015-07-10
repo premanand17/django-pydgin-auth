@@ -26,5 +26,3 @@ urlpatterns = [url(r'^login/$',  django.contrib.auth.views.login),
                    name="password_reset_confirm"),
                url(r'^user/password/done/$', django.contrib.auth.views.password_reset_complete),
                ]
-
-

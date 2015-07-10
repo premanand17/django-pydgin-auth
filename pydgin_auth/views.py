@@ -8,7 +8,6 @@ from pydgin_auth.forms import PydginUserCreationForm
 import os.path
 from django.contrib.auth.decorators import login_required
 from tastypie.models import ApiKey
-import pprint
 
 
 def login_home(request):
@@ -61,21 +60,3 @@ def register(request):
     token['terms_n_condition'] = terms_n_condition_txt
 
     return render_to_response('registration/registration_form.html', token)
-
-
-# Server Errrors
-def server_error_401(request, template_name='401.html'):
-    """
-    401 error handler.
-
-    Templates: `401.html`
-    Context: None
-    """
-    return render_to_response(template_name,
-        context_instance = RequestContext(request)
-    )
-
-
-
-
-
