@@ -2,15 +2,15 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.admin import UserAdmin, GroupAdmin
-from requests_oauthlib.oauth1_auth import unicode
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import Permission
 
 
 def roles(self):
-    short_name = unicode  # function to get group name
+    #short_name = unicode  # function to get group name
     # short_name = lambda x: unicode(x)[:1].upper() # first letter of a group
-    p = sorted([u"<a title='%s'>%s</a>" % (x, short_name(x)) for x in self.groups.all()])
+    #p = sorted([u"<a title='%s'>%s</a>" % (x, short_name(x)) for x in self.groups.all()])
+    p = sorted([u"<a title='%s'>%s</a>" % (x,x) for x in self.groups.all()])
     if self.user_permissions.count():
         p += ['+']
     value = ', '.join(p)

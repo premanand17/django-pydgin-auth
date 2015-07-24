@@ -7,8 +7,9 @@ admin.autodiscover()
 
 # Registration URLs
 urlpatterns = [url(r'^login/$',  django.contrib.auth.views.login),
-               url(r'^logout/$', django.contrib.auth.views.logout, {'next_page': '/human_GRCh38/'}),
+               url(r'^logout/$', django.contrib.auth.views.logout, {'next_page': '/'}),
                url(r'^profile/$',  pydgin_auth.views.profile),
+               url(r'^permission_denied/$',  pydgin_auth.views.permission_denied),
                url(r'^register/$', pydgin_auth.views.register),
                url(r'^register/complete/$', pydgin_auth.views.registration_complete),
                url(r'^user/password/reset/$', django.contrib.auth.views.password_reset,
@@ -26,5 +27,3 @@ urlpatterns = [url(r'^login/$',  django.contrib.auth.views.login),
                    name="password_reset_confirm"),
                url(r'^user/password/done/$', django.contrib.auth.views.password_reset_complete),
                ]
-
-

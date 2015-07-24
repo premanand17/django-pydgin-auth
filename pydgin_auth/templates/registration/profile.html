@@ -4,10 +4,15 @@
 {% block content %}
 
 I am your profile :)
+<br/><br/>
+<strong>Username:</strong> {{ user }}
 <br/>
-Username: {{ user }}
-<br/>
-API Key:  {{ api_key }}
-<br/>
+<strong>Token:</strong>  {{ api_key}}
+<br/><br/>
+Try the Django REST framework link for pubs now!<br/>
 
+<a href='/rest/pubs/9358075/?format=json'>/rest/pubs/9358075/?format=json</a>
+
+<br/><br/>
+<a id='logout_link' href="/accounts/logout">Logout ({{ user }})</a>
 {% endblock %}
