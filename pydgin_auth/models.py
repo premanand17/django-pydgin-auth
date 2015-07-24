@@ -4,7 +4,7 @@ from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
-from tastypie.models import create_api_key
+from rest_framework.authtoken.models import Token
 
 
 @receiver(post_save, sender=User, dispatch_uid='pydgin_auth.models.user_post_save_handler')
@@ -12,18 +12,21 @@ def user_post_save(sender, instance, created, **kwargs):
     """ This method is executed whenever an user object is saved
     """
     if created:
-        instance.groups.add(Group.objects.get(name='EVERYONE'))
+        instance.groups.add(Group.objects.get(name='READ'))
 
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
-    is_terms_agreed = models.BooleanField(default=False)
 #   Create profile automatically when referenced
     User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
     try:
-        models.signals.post_save.connect(create_api_key, sender=User)
+        models.signals.post_save.connect(create_auth_token, sender=User)
     except:
         pass
+
+    def create_auth_token(self, sender, instance=None, created=False, **kwargs):
+        for user in User.objects.all():
+            Token.objects.get_or_create(user=user)
 
 
 class GlobalPermissionManager(models.Manager):

@@ -31,6 +31,24 @@ Quick start
 
 5. Tests can be run as follows::
 
-    ./manage.py test 
+    ./manage.py test pydgin_auth 
 
- 
+6. How to run migrations
+Run the default migrations
+./manage.py makemigrations
+./manage.py migrate 
+
+./manage.py makemigrations admin
+./manage.py makemigrations auth
+./manage.py makemigrations contenttypes
+./manage.py makemigrations sessions
+./manage.py makemigrations authtoken
+./manage.py makemigrations pydgin_auth
+
+./manage.py migrate admin --database=pydgin_authdb
+./manage.py migrate contenttypes --database=pydgin_authdb
+./manage.py migrate auth --database=pydgin_authdb
+./manage.py migrate sessions --database=pydgin_authdb
+./manage.py migrate authtoken --database=pydgin_authdb
+./manage.py migrate pydgin_auth --database=pydgin_authdb
+

@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group
 from django.test.client import RequestFactory, Client
 
 
-class PydginAuthTest(TestCase):
+class PydginAuthTestCase(TestCase):
 
     multi_db = True
 
@@ -13,7 +13,7 @@ class PydginAuthTest(TestCase):
         self.client = Client()
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
-        self.group = Group.objects.create(name='EVERYONE')
+        self.group = Group.objects.create(name='READ')
         self.user = User.objects.create_user(
             username='test_user', email='test@test.com', password='test_pass')
 

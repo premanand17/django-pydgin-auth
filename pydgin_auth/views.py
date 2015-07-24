@@ -7,7 +7,7 @@ from django.template.context import RequestContext
 from pydgin_auth.forms import PydginUserCreationForm
 import os.path
 from django.contrib.auth.decorators import login_required
-from tastypie.models import ApiKey
+from rest_framework.authtoken.models import Token
 
 
 def login_home(request):
@@ -15,15 +15,22 @@ def login_home(request):
     return render_to_response('registration/login.html', context_instance=context)
 
 
+def permission_denied(request):
+    context = RequestContext(request, {'request': request, 'user': request.user})
+    return render_to_response('registration/permission_denied.html', context_instance=context)
+
+
 @login_required(login_url='/accounts/login/')
 def profile(request):
     try:
-        api_key = ApiKey.objects.get(user=request.user)
-    except ApiKey.DoesNotExist:
+        token = Token.objects.get_or_create(user=request.user)
+    except Token.DoesNotExist:
+        print('Exception while creating tokens')
         pass
+
     print(request.user.username)
-    print(api_key.key)
-    context = RequestContext(request, {'request': request, 'user': request.user, 'api_key': api_key.key})
+    print(token)
+    context = RequestContext(request, {'request': request, 'user': request.user, 'api_key': token})
     return render_to_response('registration/profile.html', context_instance=context)
 
 
@@ -50,7 +57,7 @@ def register(request):
                                     is_terms_agreed=form.cleaned_data['is_terms_agreed'])
             login(request, new_user)
             messages.info(request, "Thanks for registering. You are now logged in.")
-            return HttpResponseRedirect('/human_GRCh38/')
+            return HttpResponseRedirect('/')
 
     else:
         form = PydginUserCreationForm()
