@@ -7,16 +7,16 @@ class AuthRouter(object):
         """
         Attempts to read pydgin_auth models go to pydgin_authdb.
         """
-        app_list = ('auth', 'admin', 'pydgin_auth', 'contenttypes', 'sessions', 'staticfiles', 'authtoken')
+        app_list = ('auth', 'admin', 'pydgin_auth', 'contenttypes', 'sessions', 'staticfiles', 'authtoken','elastic')
         if model._meta.app_label in app_list:
             return 'pydgin_authdb2'
         return None
-
+        
     def db_for_write(self, model, **hints):
         """
         Attempts to write auth models go to auth_db.
         """
-        app_list = ('auth', 'admin', 'pydgin_auth', 'contenttypes', 'sessions', 'staticfiles', 'authtoken')
+        app_list = ('auth', 'admin', 'pydgin_auth', 'contenttypes', 'sessions', 'staticfiles', 'authtoken','elastic')
         # print('Writing models ' + model._meta.app_label)
         if model._meta.app_label in app_list:
             return 'pydgin_authdb2'
@@ -26,7 +26,7 @@ class AuthRouter(object):
         """
         Allow relations if a model in the auth app is involved.
         """
-        app_list = ('auth', 'admin', 'pydgin_auth', 'contenttypes', 'sessions', 'staticfiles', 'authtoken')
+        app_list = ('auth', 'admin', 'pydgin_auth', 'contenttypes', 'sessions', 'staticfiles', 'authtoken','elastic')
         if obj1._meta.app_label in app_list or obj2._meta.app_label in app_list:
             return True
         return None
@@ -36,7 +36,7 @@ class AuthRouter(object):
         Make sure the pydgin_auth app only appears in the 'pydgin_authdb'
         database.
         """
-        app_list = ('auth', 'admin', 'pydgin_auth', 'contenttypes', 'sessions', 'staticfiles', 'authtoken')
+        app_list = ('auth', 'admin', 'pydgin_auth', 'contenttypes', 'sessions', 'staticfiles', 'authtoken','elastic')
         # print('migrating models ' + app_label)
         if app_label in app_list:
             return db == 'pydgin_authdb2'
