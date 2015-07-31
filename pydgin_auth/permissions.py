@@ -27,5 +27,5 @@ def check_index_perms(user, idx_names):
         else:
             idx_names_auth.append(idx)
 
-    logger.debug('After permission check' + idx_names_auth)
+    logger.debug('After permission check' + str(idx_names_auth))
     return idx_names_auth
