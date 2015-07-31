@@ -1,33 +1,33 @@
 class AuthRouter(object):
     """
-    A router to control all database operations on models in the
-    auth application.
+    A router to control database operations on models. We can customize which database to use for which application
     """
+    APP_LIST = ('auth', 'admin', 'pydgin_auth', 'contenttypes', 'sessions', 'staticfiles', 'authtoken', 'elastic')
+
+    # remember this is the key of the database definitions in the settings file
+    AUTH_DB = 'pydgin_authdb2'
+
     def db_for_read(self, model, **hints):
         """
         Attempts to read pydgin_auth models go to pydgin_authdb.
         """
-        app_list = ('auth', 'admin', 'pydgin_auth', 'contenttypes', 'sessions', 'staticfiles', 'authtoken','elastic')
-        if model._meta.app_label in app_list:
-            return 'pydgin_authdb2'
+        if model._meta.app_label in AuthRouter.APP_LIST:
+            return AuthRouter.AUTH_DB
         return None
-        
+
     def db_for_write(self, model, **hints):
         """
         Attempts to write auth models go to auth_db.
         """
-        app_list = ('auth', 'admin', 'pydgin_auth', 'contenttypes', 'sessions', 'staticfiles', 'authtoken','elastic')
-        # print('Writing models ' + model._meta.app_label)
-        if model._meta.app_label in app_list:
-            return 'pydgin_authdb2'
+        if model._meta.app_label in AuthRouter.APP_LIST:
+            return AuthRouter.AUTH_DB
         return None
 
     def allow_relation(self, obj1, obj2, **hints):
         """
         Allow relations if a model in the auth app is involved.
         """
-        app_list = ('auth', 'admin', 'pydgin_auth', 'contenttypes', 'sessions', 'staticfiles', 'authtoken','elastic')
-        if obj1._meta.app_label in app_list or obj2._meta.app_label in app_list:
+        if obj1._meta.app_label in AuthRouter.APP_LIST or obj2._meta.app_label in AuthRouter.APP_LIST:
             return True
         return None
 
@@ -36,8 +36,6 @@ class AuthRouter(object):
         Make sure the pydgin_auth app only appears in the 'pydgin_authdb'
         database.
         """
-        app_list = ('auth', 'admin', 'pydgin_auth', 'contenttypes', 'sessions', 'staticfiles', 'authtoken','elastic')
-        # print('migrating models ' + app_label)
-        if app_label in app_list:
-            return db == 'pydgin_authdb2'
+        if app_label in AuthRouter.APP_LIST:
+            return db == AuthRouter.AUTH_DB
         return None
