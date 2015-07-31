@@ -1,7 +1,7 @@
  {% if user.is_authenticated and user.username != 'AnonymousUser' %}
     
     {% load permissions_tag %}
-	{% if user|has_group:"DIL-ADMIN" %}
+	{% if user|is_in_group:"DIL-ADMIN" %}
 	<li><a href="/admin">Admin</a></li>
 	{% endif %}
 	  	
