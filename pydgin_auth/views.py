@@ -29,8 +29,6 @@ def profile(request):
         logging.debug('Exception while creating tokens')
         pass
 
-    print(request.user.username)
-    print(token)
     # context = RequestContext(request, {'request': request, 'user': request.user, 'api_key': token})
     request_context = RequestContext(request)
     request_context.push({"api_key": token})
@@ -38,12 +36,12 @@ def profile(request):
 
 
 def registration_complete(request):
-    print("Registration complete called")
+    logger.debug("Registration complete..")
     return render(request, 'registration/registration_form_complete.html')
 
 
 def register(request):
-    print('register called')
+    logger.debug('Registering a new user')
     # read the terms and conditions file
     curr_path = os.path.dirname(os.path.realpath(__file__))
     with open(curr_path + "/templates/registration/IMB_TOC_draft.html", "r") as myfile:
