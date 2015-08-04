@@ -12,7 +12,6 @@ from django.test.client import Client, RequestFactory
 # Get an instance of a logger
 import logging
 import json
-from pprint import pprint
 logger = logging.getLogger(__name__)
 
 
