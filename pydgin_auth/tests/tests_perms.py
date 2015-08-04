@@ -22,6 +22,7 @@ class PydginAuthTestCase(TestCase):
         self.group = Group.objects.create(name='READ')
         self.user = User.objects.create_user(
             username='test_user', email='test@test.com', password='test_pass')
+        self.user.groups.add(self.group)
 
     def test_routers(self):
         logger.debug('running test_routers')
