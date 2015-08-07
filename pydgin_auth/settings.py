@@ -6,6 +6,8 @@ https://docs.djangoproject.com/en/1.7/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
+
+LOGIN_EXEMPT_URLS is used by login_required_middleware
 """
 
 

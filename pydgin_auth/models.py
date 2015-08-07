@@ -20,6 +20,7 @@ def user_post_save(sender, instance, created, **kwargs):
 
 
 class UserProfile(models.Model):
+    """Extention for user model..added is_terms_agreed as an extra field"""
     user = models.ForeignKey(User, unique=True)
     is_terms_agreed = models.BooleanField(default=False)
     # Create profile automatically when referenced
