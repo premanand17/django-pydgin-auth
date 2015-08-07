@@ -4,7 +4,7 @@ from elastic.tests.settings_idx import IDX
 from elastic.elastic_settings import ElasticSettings
 
 from elastic.search import Search, ElasticQuery
-from elastic.query import Query
+from elastic.query import Query, TermsFilter, BoolQuery
 import requests
 from django.contrib.auth.models import User, Group
 from pydgin_auth.permissions import get_user_groups
@@ -73,8 +73,18 @@ class PydginAuthElasticTestCase(TestCase):
          "seqid": "chr4", "source": "immunobase", "type": "region",
          "score": ".", "strand": ".", "phase": ".", "start": 122061159, "end": 122684373}
         idx_query:
-        curl -XGET 'http://dev-elastic1:9200/region_perms_test_idx/_search?pretty' -d
-        '{"query":{"filtered":{"query":{"match_all":{}},"filter":{"terms":{"group_name":["dil"]}}}}}'
+        Private(in given group) OR Public
+        -d '{"query":{"filtered":{"filter":{"bool": {
+                                            "should": [
+                                                        {"terms": {"group_name":["dil"]}},
+                                                        { "missing": { "field": "group_name"   }}
+                                                      ]
+                                                    }}}}}'
+        Private(in given group):
+        -d '{"query":{"filtered":{"filter":{"terms":{"group_name":["dil"]}}}}}'
+        Public:
+        -d {'query': {'filtered': {'filter': {'missing': {'field': 'group_name'}},
+-                         'query': {'term': {'match_all': '{}'}}}}}
         '''
         # get the groups for the given user
         response = self.client.post('/accounts/login/', {'username': 'test_user', 'password': 'test_pass'})
@@ -90,13 +100,11 @@ class PydginAuthElasticTestCase(TestCase):
         group_names = get_user_groups(logged_in_user)
         if 'READ' in group_names : group_names.remove('READ')  # @IgnorePep8
         group_names = [x.lower() for x in group_names]
+        self.assertTrue(len(group_names) == 0, "No group present")
 
-        query = None
-        if len(group_names) > 0:
-            query = ElasticQuery(Query.terms("group_name", group_names))
-        else:
-            query = ElasticQuery(Query.match_all())
-
+        # Match all query
+        # as there is not group we do a match all
+        query = ElasticQuery(Query.match_all())
         expected_query_string = {"query": {"match_all": {}}}
         self.assertJSONEqual(json.dumps(query.query), json.dumps(expected_query_string), "Query string matched")
 
@@ -105,26 +113,38 @@ class PydginAuthElasticTestCase(TestCase):
         docs = elastic.search().docs
         self.assertTrue(len(docs) == 12, "Elastic string query retrieved all public regions")
 
+        # Filtered query for group names
         # add the user to DIL group and get the query string
         self.dil_group = Group.objects.create(name='DIL')
         logged_in_user.groups.add(self.dil_group)
         group_names = get_user_groups(logged_in_user)
         if 'READ' in group_names : group_names.remove('READ')  # @IgnorePep8
         group_names = [x.lower() for x in group_names]
+        self.assertTrue(len(group_names) > 0, "More than 1 group present")
+        self.assertTrue("dil" in group_names, "DIL group present")
 
-        if len(group_names) > 0:
-            query = ElasticQuery(Query.terms("group_name", group_names))
-        else:
-            query = ElasticQuery(Query.match_all())
+        # retrieves all docs with missing file group_name - 11 docs
+        terms_filter = TermsFilter.get_missing_terms_filter("field", "group_name")
+        query = ElasticQuery.filtered(Query.match_all(), terms_filter)
+        elastic = Search(query, idx=self.index_name)
+        docs = elastic.search().docs
+        self.assertTrue(len(docs) == 11, "Elastic string query retrieved all public regions")
 
-        expected_query_string = {'query': {'terms': {'group_name': ['dil'], 'minimum_should_match': 1}}}
-        self.assertJSONEqual(json.dumps(query.query), json.dumps(expected_query_string), "Query string matched")
+        # build filtered boolean query to bring all public docs + private docs 11+1 = 12 docs
+        query_bool = BoolQuery()
+        query_bool.should(Query.missing_terms("field", "group_name")) \
+                  .should(Query.terms("group_name", group_names).query_wrap())
 
+        query = ElasticQuery.filtered_bool(Query.match_all(), query_bool)
+        elastic = Search(query, idx=self.index_name)
+        docs = elastic.search().docs
+        self.assertTrue(len(docs) == 12, "Elastic string query retrieved both public + private regions")
+
+        terms_filter = TermsFilter.get_terms_filter("group_name", group_names)
+        query = ElasticQuery.filtered(Query.match_all(), terms_filter)
         elastic = Search(query, idx=self.index_name)
         docs = elastic.search().docs
         self.assertTrue(len(docs) == 1, "Elastic string query retrieved one private regions")
-        self.assertTrue(getattr(docs[0], 'seqid'), "Hit attribute found")
-        self.assertEqual(docs[0].type, "region", "type matched region")
         self.assertEqual(docs[0].attr['Name'], "4q27", "type matched region")
         self.assertEqual(docs[0].attr['region_id'], "803", "type matched region")
         self.assertEqual(docs[0].attr['group_name'], "[\"DIL\"]", "type matched region")
