@@ -33,6 +33,7 @@ def check_index_perms(user, idx_names):
 
 
 def check_has_permission(user, idx):
+    '''Check if the user has any permissions granted on the given model'''
     app_name = ElasticPermissionModelFactory.PERMISSION_MODEL_APP_NAME
     model_name = idx.lower() + ElasticPermissionModelFactory.PERMISSION_MODEL_SUFFIX
 
@@ -53,6 +54,7 @@ def check_has_permission(user, idx):
 
 
 def get_user_groups(user):
+    '''Get all users in a given group'''
     current_user = get_object_or_404(User, pk=user.id)
     current_user_groups = []
     user_groups = current_user.groups.all()

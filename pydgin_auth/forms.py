@@ -5,6 +5,7 @@ from pydgin_auth.models import UserProfile
 
 
 class PydginUserCreationForm(UserCreationForm):
+    '''£xtended user form with is_terms_agreed field'''
     is_terms_agreed = forms.BooleanField(label="Terms and conditions", required=True)
     email = forms.EmailField(label="Email address", max_length=254, required=True)
 

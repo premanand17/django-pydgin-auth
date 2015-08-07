@@ -14,15 +14,18 @@ logger = logging.getLogger(__name__)
 
 
 def login_home(request):
+    '''renders login home page'''
     return render(request, 'registration/login.html')
 
 
 def permission_denied(request):
+    '''renders permission denied page'''
     return render(request, 'registration/permission_denied.html')
 
 
 @login_required(login_url='/accounts/login/')
 def profile(request):
+    '''renders user profile page'''
     try:
         token = Token.objects.get_or_create(user=request.user)
     except Token.DoesNotExist:
@@ -36,12 +39,12 @@ def profile(request):
 
 
 def registration_complete(request):
-    logger.debug("Registration complete..")
+    '''renders registration complete page'''
     return render(request, 'registration/registration_form_complete.html')
 
 
 def register(request):
-    logger.debug('Registering a new user')
+    '''register a new user after agreeing to terms and condition'''
     # read the terms and conditions file
     curr_path = os.path.dirname(os.path.realpath(__file__))
     with open(curr_path + "/templates/registration/IMB_TOC_draft.html", "r") as myfile:

@@ -21,19 +21,16 @@ class PydginAuthElasticTestCase(TestCase):
 
     def setUp(self):
         ''' Run the index loading script to create test indices and
-        create test repository '''
+        create test user '''
 
         region_key = 'PRIVATE_REGIONS_GFF'
         if region_key in IDX.keys():
             idx_kwargs = IDX[region_key]
             self.index_name = idx_kwargs['indexName']
-            print("Index name ============" + str(self.index_name))
             call_command('index_search', **idx_kwargs)
 
         '''Create test user and test client'''
-        # Every test needs a client.
         self.client = Client()
-        # Every test needs access to the request factory.
         self.factory = RequestFactory()
         self.default_group = Group.objects.create(name='READ')
 
@@ -65,9 +62,9 @@ class PydginAuthElasticTestCase(TestCase):
 
     def test_elastic_group_name(self):
         '''
-        gff row:
-        chr4    immunobase      region  122061159       122684373       .       .       .
-        Name=4q27;region_id=803;region_group=["DIL"]
+        Testing the workflow defined in: https://killin.cimr.cam.ac.uk/nextgensite/2015/08/05/region-authorization/
+        Testing various elastic queries
+
         idx doc:
          "_source":{"attr": {"region_id": "803", "group_name": "[\"DIL\"]", "Name": "4q27"},
          "seqid": "chr4", "source": "immunobase", "type": "region",
@@ -102,8 +99,7 @@ class PydginAuthElasticTestCase(TestCase):
         group_names = [x.lower() for x in group_names]
         self.assertTrue(len(group_names) == 0, "No group present")
 
-        # Match all query
-        # as there is not group we do a match all
+        # Match all query, as there is no group we do a match all
         query = ElasticQuery(Query.match_all())
         expected_query_string = {"query": {"match_all": {}}}
         self.assertJSONEqual(json.dumps(query.query), json.dumps(expected_query_string), "Query string matched")
@@ -113,8 +109,7 @@ class PydginAuthElasticTestCase(TestCase):
         docs = elastic.search().docs
         self.assertTrue(len(docs) == 12, "Elastic string query retrieved all public regions")
 
-        # Filtered query for group names
-        # add the user to DIL group and get the query string
+        # Filtered query for group names, add the user to DIL group and get the query string
         self.dil_group = Group.objects.create(name='DIL')
         logged_in_user.groups.add(self.dil_group)
         group_names = get_user_groups(logged_in_user)

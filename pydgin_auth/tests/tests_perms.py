@@ -15,6 +15,8 @@ class PydginAuthTestCase(TestCase):
     multi_db = True
 
     def setUp(self):
+        '''Method called to prepare the test , is called immediately before calling the test method.
+        Create test_user and add it to READ group'''
         # Every test needs a client.
         self.client = Client()
         # Every test needs access to the request factory.
@@ -25,6 +27,7 @@ class PydginAuthTestCase(TestCase):
         self.user.groups.add(self.group)
 
     def test_routers(self):
+        '''Test if the routers are available to route to different databases'''
         logger.debug('running test_routers')
         self.original_routers = router.routers
 
@@ -36,6 +39,7 @@ class PydginAuthTestCase(TestCase):
         self.assertTrue('DefaultRouter' in routers, "Found DefaultRouter in routers")
 
     def test_login(self):
+        '''Test login. First try to login with invalid credentials, and try again with right credentials again'''
         logger.debug('running test_login')
         response = self.client.get('/accounts/login?next=/human_GRCh38/', follow=True)
         # check if redirected to login
@@ -52,6 +56,8 @@ class PydginAuthTestCase(TestCase):
         self.assertEqual(User.objects.get(id=self.client.session['_auth_user_id']).username, 'test_user')
 
     def test_register_user(self):
+        '''Test registration. First try to login with out agreeing to terms and
+        try to register again with is_terms_agreed set'''
         logger.debug('running test_register_user')
         response = self.client.get('/accounts/register/', follow=True)
         # check if redirected to registration page
@@ -82,7 +88,8 @@ class PydginAuthTestCase(TestCase):
         self.assertTrue(user_present, "new_user in Users list after is_terms_agreed")
 
     def test_create_groups(self):
-        '''test if we get back the READ group without creating it and other groups should get created'''
+        '''Test if we get back the READ group without creating it (created is false)
+        and other groups should get created (created is True)'''
         read_group, created = Group.objects.get_or_create(name='READ')
         self.assertEqual(read_group.name, "READ")
         self.assertEqual(created, False)
@@ -100,7 +107,7 @@ class PydginAuthTestCase(TestCase):
         self.assertTrue(created)
 
     def test_users_groups_perms(self):
-
+        '''Test to create users, create groups, assign users to group, check permissions'''
         dil_group, created = Group.objects.get_or_create(name='DIL')
         self.assertTrue(created)
         dil_user = User.objects.create_user(

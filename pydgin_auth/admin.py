@@ -41,18 +41,21 @@ last.admin_order_field = 'last_login'
 
 
 def adm(self):
+    '''return True if user is superuser'''
     return self.is_superuser
 adm.boolean = True
 adm.admin_order_field = 'is_superuser'
 
 
 def staff(self):
+    '''return True if user is staff'''
     return self.is_staff
 staff.boolean = True
 staff.admin_order_field = 'is_staff'
 
 
 def terms_agreed(self):
+    '''return True if the user has accepted the terms'''
     return self.profile.is_terms_agreed
 terms_agreed.boolean = True
 terms_agreed.admin_order_field = 'is_terms_agreed'
@@ -109,7 +112,8 @@ def create_elastic_index_model_manager(model_name, application_label, content_ty
 
 def create_elastic_index_model(model_name, application_label):
     '''
-    function to create proxy Models dynamically
+    function to create proxy Models dynamically.
+    Create ContentType and pass the id to the function that creates model manager
     '''
 
     class Meta:
