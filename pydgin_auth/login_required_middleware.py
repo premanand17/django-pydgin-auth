@@ -25,9 +25,7 @@ class LoginRequiredMiddleware:
 
         if request.user.is_authenticated():
             # Do something for authenticated users.set up the cookies?!
-            # print("Authenticated user")
             pass
         else:
-            # Do something for anonymous users.
             # print("Anonymous user")
             pass
