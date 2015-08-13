@@ -4,8 +4,6 @@ Just to show sample implementation
 '''
 
 from django.contrib.auth.decorators import user_passes_test
-# from django.contrib.auth.decorators import permission_required
-
 
 '''
 Decorator Usage:
@@ -15,6 +13,7 @@ def my_view(request):
 
 
 def email_check_is_internal(user):
+    '''check if user's email ends with cam.ac.uk'''
     return user.email.endswith('cam.ac.uk')
 
 

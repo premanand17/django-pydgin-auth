@@ -1,4 +1,5 @@
-from django.shortcuts import render_to_response
+'''Manage views for pydgin_auth'''
+from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.context_processors import csrf
 from django.contrib import messages
@@ -8,39 +9,42 @@ from pydgin_auth.forms import PydginUserCreationForm
 import os.path
 from django.contrib.auth.decorators import login_required
 from rest_framework.authtoken.models import Token
+import logging
+logger = logging.getLogger(__name__)
 
 
 def login_home(request):
-    context = RequestContext(request, {'request': request, 'user': request.user})
-    return render_to_response('registration/login.html', context_instance=context)
+    '''renders login home page'''
+    return render(request, 'registration/login.html')
 
 
 def permission_denied(request):
-    context = RequestContext(request, {'request': request, 'user': request.user})
-    return render_to_response('registration/permission_denied.html', context_instance=context)
+    '''renders permission denied page'''
+    return render(request, 'registration/permission_denied.html')
 
 
 @login_required(login_url='/accounts/login/')
 def profile(request):
+    '''renders user profile page'''
     try:
         token = Token.objects.get_or_create(user=request.user)
     except Token.DoesNotExist:
-        print('Exception while creating tokens')
+        logging.debug('Exception while creating tokens')
         pass
 
-    print(request.user.username)
-    print(token)
-    context = RequestContext(request, {'request': request, 'user': request.user, 'api_key': token})
-    return render_to_response('registration/profile.html', context_instance=context)
+    # context = RequestContext(request, {'request': request, 'user': request.user, 'api_key': token})
+    request_context = RequestContext(request)
+    request_context.push({"api_key": token})
+    return render(request, 'registration/profile.html', context_instance=request_context)
 
 
 def registration_complete(request):
-    print("Registration complete called")
-    return render_to_response('registration/registration_form_complete.html')
+    '''renders registration complete page'''
+    return render(request, 'registration/registration_form_complete.html')
 
 
 def register(request):
-    print('register called')
+    '''register a new user after agreeing to terms and condition'''
     # read the terms and conditions file
     curr_path = os.path.dirname(os.path.realpath(__file__))
     with open(curr_path + "/templates/registration/IMB_TOC_draft.html", "r") as myfile:
@@ -65,5 +69,6 @@ def register(request):
     token.update(csrf(request))
     token['form'] = form
     token['terms_n_condition'] = terms_n_condition_txt
-
-    return render_to_response('registration/registration_form.html', token)
+    request_context = RequestContext(request)
+    request_context.push({"token": token})
+    return render(request, 'registration/registration_form.html', token)
