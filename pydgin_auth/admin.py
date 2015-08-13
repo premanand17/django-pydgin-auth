@@ -121,8 +121,9 @@ def create_elastic_index_model(model_name, application_label):
         verbose_name = model_name
         app_label = application_label
 
-    ct, created = ContentType.objects.get_or_create(model=Meta.verbose_name, app_label=Meta.app_label)
-    logger.debug("Status of " + str(Meta.verbose_name) + " is  " + str(created) + ' OBject id is ' + str(ct.id))
+    ct, created = ContentType.objects.get_or_create(model=Meta.verbose_name,  # @UnusedVariable
+                                                    app_label=Meta.app_label)
+    # logger.debug("Status of " + str(Meta.verbose_name) + " is  " + str(created) + ' OBject id is ' + str(ct.id))
     model_manager = create_elastic_index_model_manager(model_name, application_label, ct.id)
 
     attrs = {'__module__': 'elastic.models', 'Meta': Meta, 'objects': model_manager()}
@@ -139,7 +140,7 @@ class ElasticPermissionModelFactory():
     PERMISSION_MODEL_APP_NAME = 'elastic'
 
     idx_names = ElasticSettings.attrs().get('SEARCH').get('IDX_TYPES').keys()
-    logger.debug(idx_names)
+    # logger.debug(idx_names)
 
     elastic_idx = ElasticSettings.attrs().get('SEARCH').get('IDX_TYPES').keys()
     for idx in elastic_idx:
