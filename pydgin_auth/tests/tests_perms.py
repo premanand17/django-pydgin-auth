@@ -41,7 +41,7 @@ class PydginAuthTestCase(TestCase):
     def test_login(self):
         '''Test login. First try to login with invalid credentials, and try again with right credentials again'''
         logger.debug('running test_login')
-        response = self.client.get('/accounts/login?next=/human_GRCh38/', follow=True)
+        response = self.client.get('/accounts/login/', follow=True)
         # check if redirected to login
         self.assertTemplateUsed(response, 'registration/login.html')
 
