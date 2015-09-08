@@ -90,7 +90,7 @@ Quick start
 	psql webuser -h localhost -d pydgin_authdb -f pydgin_auth/static/pydgin_auth/data/pydgin_authdb_data.sql
 
 
-10. Tests can be run as follows::
+10. Tests can be run as follows:
 
 	./manage.py test pydgin_auth.tests 
 
