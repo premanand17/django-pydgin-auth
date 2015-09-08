@@ -21,6 +21,7 @@ Quick start
     INSTALLED_APPS = (
         ...
         'pydgin-auth',
+        'auth_test'
     )
 
 4. Add the following lines to your project settings.py::
