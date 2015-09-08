@@ -46,10 +46,10 @@ Quick start
 	sudo -u postgres psql -c "ALTER USER webuser CREATEDB;"
 	
 	sudo -u postgres psql -c "CREATE database pydgin_authdb;"
-	sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE 'pydgin_coredb' TO webuser;"
+	sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE "pydgin_authdb" TO webuser;"
 	
 	sudo -u postgres psql -c "CREATE database pydgin_coredb;"
-	sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE 'pydgin_authdb' TO webuser;"
+	sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE "pydgin_coredb" TO webuser;"
 
 
 6. Migrations - Clear migrations if you already have created them::
