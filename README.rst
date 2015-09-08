@@ -39,7 +39,7 @@ Quick start
 	        except ImportError:
 	            pass
 
-5. Create users and databases
+5. Create users and databases::
 
 	sudo -u postgres psql -c "CREATE USER webuser WITH PASSWORD 'webuser';"
 	sudo -u postgres psql -c "ALTER USER webuser CREATEDB;"
@@ -51,7 +51,7 @@ Quick start
 	sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE 'pydgin_authdb' TO webuser;"
 
 
-6. Migrations - Clear migrations if you already have created them:
+6. Migrations - Clear migrations if you already have created them::
 
 	rm -rf python-env/pydgin-env/lib/python3.4/site-packages/django/contrib/auth/migrations/
 	rm -rf python-env/pydgin-env/lib/python3.4/site-packages/django/contrib/admin/migrations/
@@ -63,7 +63,7 @@ Quick start
 	rm -rf /gdxbase/www/xxx-dev/django-elastic/elastic/
 	rm -rf /gdxbase/www/xxx-dev/pydgin/pydgin/local_apps/auth_test/migrations
 
-7. Migrations - Makemigrations
+7. Migrations - Makemigrations::
 	./manage.py makemigrations admin
 	./manage.py makemigrations auth
 	./manage.py makemigrations contenttypes
@@ -72,7 +72,7 @@ Quick start
 	./manage.py makemigrations pydgin_auth
 	./manage.py makemigrations auth_test
 
-8. Migrations - Migrate in the following order:
+8. Migrations - Migrate in the following order::
 	./manage.py migrate admin --database=pydgin_authdb
 	./manage.py migrate contenttypes --database=pydgin_authdb #will be called by admin
 	./manage.py migrate auth --database=pydgin_authdb  #will be called by admin
@@ -85,12 +85,11 @@ Quick start
 	./manage.py migrate elastic --database=pydgin_authdb
 	./manage.py migrate  --database=default
 
-9. Import test usernames and permissions:
+9. Import test usernames and permissions::
 
 	psql webuser -h localhost -d pydgin_authdb -f pydgin_auth/static/pydgin_auth/data/pydgin_authdb_data.sql
 
-
-10. Tests can be run as follows:
+10. Tests can be run as follows::
 
 	./manage.py test pydgin_auth.tests 
 
