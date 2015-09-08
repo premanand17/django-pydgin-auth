@@ -58,11 +58,11 @@ Quick start
 	rm -rf /gdxbase/www/xxx-dev/python-env/python-env/pydgin-env/lib/python3.4/site-packages/django/contrib/admin/migrations/
 	rm -rf /gdxbase/www/xxx-dev/python-env/python-env/pydgin-env/lib/python3.4/site-packages/django/contrib/contenttypes/migrations/
 	rm -rf /gdxbase/www/xxx-dev/python-env/python-env/pydgin-env/lib/python3.4/site-packages/django/contrib/sessions/migrations/
-		
+	rm -rf /gdxbase/www/xxx-dev/python-env/pydgin-env/lib/python3.4/site-packages/rest_framework/authtoken/migrations/
+	
 	rm -rf /gdxbase/www/xxx-dev/django-pydgin-auth/pydgin_auth/migrations/
-	rm -rf /gdxbase/www/xxx-dev/python-env/pydgin-env/lib/python3.4/site-packages/rest_framework/authtoken/migrations
-	rm -rf /gdxbase/www/xxx-dev/django-elastic/elastic/
-	rm -rf /gdxbase/www/xxx-dev/pydgin/pydgin/local_apps/auth_test/migrations
+	rm -rf /gdxbase/www/xxx-dev/django-elastic/elastic/migrations/
+	rm -rf /gdxbase/www/xxx-dev/pydgin/pydgin/local_apps/auth_test/migrations/
 
 7. Migrations - Makemigrations::
 
