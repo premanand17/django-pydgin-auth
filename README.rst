@@ -53,17 +53,9 @@ Quick start
 
 
 6. Migrations - Clear migrations if you already have created them::
-
-	rm -rf /gdxbase/www/xxx-dev/python-env/python-env/pydgin-env/lib/python3.4/site-packages/django/contrib/auth/migrations/
-	rm -rf /gdxbase/www/xxx-dev/python-env/python-env/pydgin-env/lib/python3.4/site-packages/django/contrib/admin/migrations/
-	rm -rf /gdxbase/www/xxx-dev/python-env/python-env/pydgin-env/lib/python3.4/site-packages/django/contrib/contenttypes/migrations/
-	rm -rf /gdxbase/www/xxx-dev/python-env/python-env/pydgin-env/lib/python3.4/site-packages/django/contrib/sessions/migrations/
-	rm -rf /gdxbase/www/xxx-dev/python-env/pydgin-env/lib/python3.4/site-packages/rest_framework/authtoken/migrations/
 	
-	rm -rf /gdxbase/www/xxx-dev/django-pydgin-auth/pydgin_auth/migrations/
-	rm -rf /gdxbase/www/xxx-dev/django-elastic/elastic/migrations/
-	rm -rf /gdxbase/www/xxx-dev/pydgin/pydgin/local_apps/auth_test/migrations/
-
+	find /gdxbase/www/xxx-dev/python-env/[VIRTUAL_ENV]/lib/python3.4/site-packages/ -name "000*" -exec rm -rf {} \; 
+	
 7. Migrations - Makemigrations::
 
 	./manage.py makemigrations admin
@@ -77,8 +69,6 @@ Quick start
 8. Migrations - Migrate in the following order::
 
 	./manage.py migrate admin --database=pydgin_authdb
-	./manage.py migrate contenttypes --database=pydgin_authdb #SKIP. Will be called by admin. No need to run. 
-	./manage.py migrate auth --database=pydgin_authdb  #SKIP. Will be called by admin. No need to run. 
 	./manage.py migrate sessions --database=pydgin_authdb
 	./manage.py migrate authtoken --database=pydgin_authdb
 	./manage.py migrate pydgin_auth --database=pydgin_authdb
@@ -101,6 +91,6 @@ Quick start
 	./manage.py test pydgin_auth.tests 
 
 12. Test site::
-	Viist site http://xxxx-rh1:8000/ 
+	Viist site http://xxxx-rh1:8000/
 	Login and try to access auth_test home at  http://xxxx-rh1:8000/auth_test/
 	
