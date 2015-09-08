@@ -93,7 +93,14 @@ Quick start
 	psql webuser -h localhost -d pydgin_authdb -f ../django-pydgin-auth/pydgin_auth/static/pydgin_auth/data/pydgin_authdb_data.sql
 	(Note: password is webuser)
 
-10. Tests can be run as follows::
+10. Run the server::
+	./manage runserver xxxx-rh1:8000
+	
+11. Tests can be run as follows::
 
 	./manage.py test pydgin_auth.tests 
 
+12. Test site::
+	Viist site http://xxxx-rh1:8000/ 
+	Login and try to access auth_test home at  http://xxxx-rh1:8000/auth_test/
+	
