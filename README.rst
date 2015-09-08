@@ -77,8 +77,8 @@ Quick start
 8. Migrations - Migrate in the following order::
 
 	./manage.py migrate admin --database=pydgin_authdb
-	./manage.py migrate contenttypes --database=pydgin_authdb #will be called by admin
-	./manage.py migrate auth --database=pydgin_authdb  #will be called by admin
+	./manage.py migrate contenttypes --database=pydgin_authdb #SKIP. Will be called by admin. No need to run. 
+	./manage.py migrate auth --database=pydgin_authdb  #SKIP. Will be called by admin. No need to run. 
 	./manage.py migrate sessions --database=pydgin_authdb
 	./manage.py migrate authtoken --database=pydgin_authdb
 	./manage.py migrate pydgin_auth --database=pydgin_authdb
