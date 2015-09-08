@@ -54,10 +54,10 @@ Quick start
 
 6. Migrations - Clear migrations if you already have created them::
 
-	rm -rf python-env/pydgin-env/lib/python3.4/site-packages/django/contrib/auth/migrations/
-	rm -rf python-env/pydgin-env/lib/python3.4/site-packages/django/contrib/admin/migrations/
-	rm -rf python-env/pydgin-env/lib/python3.4/site-packages/django/contrib/contenttypes/migrations/
-	rm -rf python-env/pydgin-env/lib/python3.4/site-packages/django/contrib/sessions/migrations/
+	rm -rf /gdxbase/www/xxx-dev/python-env/python-env/pydgin-env/lib/python3.4/site-packages/django/contrib/auth/migrations/
+	rm -rf /gdxbase/www/xxx-dev/python-env/python-env/pydgin-env/lib/python3.4/site-packages/django/contrib/admin/migrations/
+	rm -rf /gdxbase/www/xxx-dev/python-env/python-env/pydgin-env/lib/python3.4/site-packages/django/contrib/contenttypes/migrations/
+	rm -rf /gdxbase/www/xxx-dev/python-env/python-env/pydgin-env/lib/python3.4/site-packages/django/contrib/sessions/migrations/
 		
 	rm -rf /gdxbase/www/xxx-dev/django-pydgin-auth/pydgin_auth/migrations/
 	rm -rf /gdxbase/www/xxx-dev/python-env/pydgin-env/lib/python3.4/site-packages/rest_framework/authtoken/migrations
