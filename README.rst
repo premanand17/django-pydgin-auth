@@ -64,6 +64,7 @@ Quick start
 	rm -rf /gdxbase/www/xxx-dev/pydgin/pydgin/local_apps/auth_test/migrations
 
 7. Migrations - Makemigrations::
+
 	./manage.py makemigrations admin
 	./manage.py makemigrations auth
 	./manage.py makemigrations contenttypes
@@ -73,6 +74,7 @@ Quick start
 	./manage.py makemigrations auth_test
 
 8. Migrations - Migrate in the following order::
+
 	./manage.py migrate admin --database=pydgin_authdb
 	./manage.py migrate contenttypes --database=pydgin_authdb #will be called by admin
 	./manage.py migrate auth --database=pydgin_authdb  #will be called by admin
