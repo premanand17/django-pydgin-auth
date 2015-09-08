@@ -90,7 +90,8 @@ Quick start
 
 9. Import test usernames and permissions::
 
-	psql webuser -h localhost -d pydgin_authdb -f pydgin_auth/static/pydgin_auth/data/pydgin_authdb_data.sql
+	psql webuser -h localhost -d pydgin_authdb -f ../django-pydgin-auth/pydgin_auth/static/pydgin_auth/data/pydgin_authdb_data.sql
+	(Note: password is webuser)
 
 10. Tests can be run as follows::
 
