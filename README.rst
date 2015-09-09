@@ -95,6 +95,7 @@ Quick start
 11. Tests can be run as follows::
 
 	./manage.py test pydgin_auth.tests 
+	./manage.py test auth_test.tests
 
 12. Test site::
 	Viist site http://xxxx-rh1:8000/
