@@ -36,10 +36,13 @@ def check_has_permission(user, idx):
     '''Check if the user has any permissions granted on the given model'''
     app_name = ElasticPermissionModelFactory.PERMISSION_MODEL_APP_NAME
     model_name = idx.lower() + ElasticPermissionModelFactory.PERMISSION_MODEL_SUFFIX
+    permissions = None
 
-    content_type = ContentType.objects.get(model=model_name, app_label=app_name)
-    logger.debug('Checking permissions for ' + str(content_type))
-    permissions = Permission.objects.filter(content_type=content_type)
+    try:
+        content_type = ContentType.objects.get(model=model_name, app_label=app_name)
+        permissions = Permission.objects.filter(content_type=content_type)
+    except:
+        pass
 
     if permissions:
         if user.is_authenticated():

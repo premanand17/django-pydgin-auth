@@ -15,6 +15,7 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from elastic.elastic_settings import ElasticSettings
 import logging
+from django.db import connections
 logger = logging.getLogger(__name__)
 
 admin.site.site_header = 'PYDGIN USER ADMIN'
@@ -145,5 +146,8 @@ class ElasticPermissionModelFactory():
     elastic_idx = ElasticSettings.attrs().get('SEARCH').get('IDX_TYPES').keys()
     for idx in elastic_idx:
         model_name = idx.lower() + PERMISSION_MODEL_SUFFIX
-        elasticmodel = create_elastic_index_model(model_name, PERMISSION_MODEL_APP_NAME)
-        admin.site.register(elasticmodel)
+        connection = connections['pydgin_authdb']
+
+        if "django_content_type" in connection.introspection.table_names():
+            elasticmodel = create_elastic_index_model(model_name, PERMISSION_MODEL_APP_NAME)
+            admin.site.register(elasticmodel)

@@ -19,3 +19,4 @@ LOGIN_EXEMPT_URLS = (r'^pydgin_auth',
                      r'^auth_test/$',
                      r'^$',
                      )
+RUN_PERMS_MODEL = True
