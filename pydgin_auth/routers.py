@@ -5,7 +5,7 @@ class AuthRouter(object):
     APP_LIST = ('auth', 'admin', 'pydgin_auth', 'contenttypes', 'sessions', 'staticfiles', 'authtoken', 'elastic')
 
     # remember this is the key of the database definitions in the settings file
-    AUTH_DB = 'pydgin_authdb2'
+    AUTH_DB = 'pydgin_authdb'
 
     def db_for_read(self, model, **hints):
         """

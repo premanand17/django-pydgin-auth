@@ -47,7 +47,7 @@ def register(request):
     '''register a new user after agreeing to terms and condition'''
     # read the terms and conditions file
     curr_path = os.path.dirname(os.path.realpath(__file__))
-    with open(curr_path + "/templates/registration/IMB_TOC_draft.html", "r") as myfile:
+    with open(curr_path + "/templates/registration/IMB_TOC_draft.html", "r", encoding="utf-8") as myfile:
         terms_n_condition_txt = myfile.read().replace('\n', '<br/>')
 
     if request.method == 'POST':
