@@ -84,8 +84,9 @@ Quick start
 	./manage.py migrate  --database=default
 
 9. Import test usernames and permissions::
-
-	psql webuser -h localhost -d pydgin_authdb -f ../django-pydgin-auth/pydgin_auth/static/pydgin_auth/data/pydgin_authdb_data.sql
+        
+	psql webuser -h localhost -d pydgin_authdb -f ../$PYENV_HOME/src/pydgin_auth/pydgin_auth/static/pydgin_auth/data/pydgin_authdb_data.sql
+	eg: psql webuser -h localhost -d pydgin_authdb -f ../python-env/pydgin_dev/src/pydgin_auth/pydgin_auth/static/pydgin_auth/data/pydgin_authdb_data.sql
 	(Note: password is webuser)
 
 10. Run the server::
@@ -94,6 +95,7 @@ Quick start
 11. Tests can be run as follows::
 
 	./manage.py test pydgin_auth.tests 
+	./manage.py test auth_test.tests
 
 12. Test site::
 	Viist site http://xxxx-rh1:8000/
