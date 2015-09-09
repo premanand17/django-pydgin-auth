@@ -14,7 +14,7 @@ setup(
     zip_safe=False,
     url='http://github.com/D-I-L/django-pydgin-auth',
     description='A Django app to provide user authentication and authoriztion services.',
-    long_description=open(os.path.join(ROOT, 'README.rst')).read(),
+    #long_description=open(os.path.join(ROOT, 'README.rst')).read(),
     install_requires=["requests>=2.7.0", "Django>=1.8.2"],
     classifiers=[
         'Environment :: Web Environment',
