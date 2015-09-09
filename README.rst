@@ -54,7 +54,12 @@ Quick start
 
 6. Migrations - Clear migrations if you already have created them::
 	
-	find /gdxbase/www/xxx-dev/python-env/[VIRTUAL_ENV]/lib/python3.4/site-packages/ -name "000*" -exec rm -rf {} \; 
+	find $PYENV_HOME -name "000*" -exec rm -rf {} \;
+	find $WORKSPACE/pydgin -name "000*" -exec rm -rf {} \;
+
+	eg: find /gdxbase/www/xxx-dev/python-env/[VIRTUAL_ENV]/lib/python3.4/site-packages/ -name "000*" -exec rm -rf {} \;
+	eg: find /gdxbase/www/xxx-dev/pydgin/pydgin/ -name "000*" -exec rm -rf {} \;
+
 	
 7. Migrations - Makemigrations::
 
