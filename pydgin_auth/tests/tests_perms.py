@@ -21,10 +21,11 @@ class PydginAuthTestCase(TestCase):
         self.client = Client()
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
-        self.group = Group.objects.create(name='READ')
+        self.group, created = Group.objects.get_or_create(name='READ')
         self.user = User.objects.create_user(
             username='test_user', email='test@test.com', password='test_pass')
         self.user.groups.add(self.group)
+        ElasticPermissionModelFactory.create_dynamic_models()
 
     def test_routers(self):
         '''Test if the routers are available to route to different databases'''
@@ -122,7 +123,7 @@ class PydginAuthTestCase(TestCase):
         # create the content type
         test_idx = 'gene'
         test_model = test_idx.lower() + ElasticPermissionModelFactory.PERMISSION_MODEL_SUFFIX
-        idx_names = [test_idx]
+        idx_names = [test_model]
 
         # create permissions on models and retest again to check if the idx could be seen
         content_type, created = ContentType.objects.get_or_create(
@@ -130,16 +131,16 @@ class PydginAuthTestCase(TestCase):
         )
 
         # check if you can see the index
-        idx_names_after_check = check_index_perms(dil_user, idx_names)
-        self.assertTrue('gene' in idx_names_after_check, 'Index gene could be seen')
+        idx_names_after_check, idx_types_after_check = check_index_perms(dil_user, idx_names)  # @UnusedVariable
+        self.assertTrue('gene' not in idx_names_after_check, 'Index gene could not be seen')
 
         # create permission and assign ...Generally we create via admin interface
         can_read_permission = Permission.objects.create(codename='can_read_gene_idx',
                                                         name='Can Read Gene Idx', content_type=content_type)
 
         # have created permission but not yet assigned to anyone
-        idx_names_after_check = check_index_perms(dil_user, idx_names)
-        self.assertFalse('gene' in idx_names_after_check, 'Index gene could not be seen')
+        idx_names_after_check, idx_types_after_check = check_index_perms(dil_user, idx_names)  # @UnusedVariable
+        self.assertFalse('gene' in idx_names_after_check, 'Index gene could not not be seen')
 
         # As we have not yet assigned the permission to dil_user the test should return False
         self.assertFalse(dil_user.has_perm('elastic.can_read_gene_idx'),
@@ -152,10 +153,9 @@ class PydginAuthTestCase(TestCase):
         self.assertTrue('elastic.can_read_gene_idx' in available_group_perms,
                         "dil_user has perm 'elastic.can_read_gene_idx' yet ")
 
-        idx_names_after_check = check_index_perms(dil_user, idx_names)
-        self.assertTrue('gene' in idx_names_after_check, 'Index gene could be seen')
+        idx_names_after_check, idx_types_after_check = check_index_perms(dil_user, idx_names)  # @UnusedVariable
 
         # As we have assigned the permission to dil_user the test should return True
         self.assertTrue(dil_user.has_perm('elastic.can_read_gene_idx'),
                         "dil_user has perm 'elastic.can_read_gene_idx' ")
-        self.assertTrue('gene' in idx_names_after_check, 'Index gene could not be seen')
+        self.assertTrue('gene_idx' in idx_names_after_check, 'Index gene could be seen')
