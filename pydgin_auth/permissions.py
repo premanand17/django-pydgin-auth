@@ -7,28 +7,52 @@ logger = logging.getLogger(__name__)
 from pydgin_auth.admin import ElasticPermissionModelFactory
 
 
-def check_index_perms(user, idx_names):
+def check_index_perms(user, idx_names, idx_types=None):
     ''' Check permissions on elastic indexes and returns indexes that the given user can see'''
-    logger.debug('Before permission check ' + str(idx_names))
+    logger.debug('Before permission check idx ' + str(idx_names))
+    logger.debug('Before permission check idx types' + str(idx_types))
+
+    idx_types_auth = []
+
+    idx_names_auth = _check_content_type_perms(idx_names, user)
+
+    if idx_types:
+        idx_types_auth = _check_content_type_perms(idx_types, user, True)
+
+    logger.debug('After permission check-name' + str(idx_names_auth))
+    logger.debug('After permission check-type' + str(idx_types_auth))
+
+    return (idx_names_auth, idx_types_auth)
+
+
+def _check_content_type_perms(idx_names, user, idx_type=False):
+    ''' Fetch content type and apply it as filter to Permission models,
+     and check if the user has perm to see the code_name'''
     idx_names_auth = []
     for idx in idx_names:
+
         app_name = ElasticPermissionModelFactory.PERMISSION_MODEL_APP_NAME
-        model_name = idx.lower() + ElasticPermissionModelFactory.PERMISSION_MODEL_SUFFIX
+        model_name = idx
 
-        content_type = ContentType.objects.get(model=model_name, app_label=app_name)
-        logger.debug('Checking permissions for ' + str(content_type))
-        permissions = Permission.objects.filter(content_type=content_type)
+        content_type = None
+        try:
+            content_type = ContentType.objects.get(model=model_name, app_label=app_name)
+        except:
+            logger.debug('Content type not found for ' + str(content_type))
 
-        if permissions:
-            if user.is_authenticated():
-                for perm in permissions:
-                    perm_code_name = app_name + '.' + perm.codename
-                    if user.has_perm(perm_code_name):
-                        idx_names_auth.append(idx)
-        else:
-            idx_names_auth.append(idx)
+        permissions = None
+        if content_type:
+            permissions = Permission.objects.filter(content_type=content_type)
 
-    logger.debug('After permission check' + str(idx_names_auth))
+            if permissions:
+                if user is not None and user.is_authenticated():
+                    for perm in permissions:
+                        perm_code_name = app_name + '.' + perm.codename
+                        if user.has_perm(perm_code_name):
+                            idx_names_auth.append(idx)
+            else:
+                idx_names_auth.append(idx)
+
     return idx_names_auth
 
 
