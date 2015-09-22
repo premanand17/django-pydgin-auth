@@ -21,7 +21,7 @@ class PydginAuthTestCase(TestCase):
         self.client = Client()
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
-        self.group, created = Group.objects.get_or_create(name='READ')
+        self.group, created = Group.objects.get_or_create(name='READ')  # @UnusedVariable
         self.user = User.objects.create_user(
             username='test_user', email='test@test.com', password='test_pass')
         self.user.groups.add(self.group)
@@ -135,7 +135,7 @@ class PydginAuthTestCase(TestCase):
         self.assertTrue('gene' not in idx_names_after_check, 'Index gene could not be seen')
 
         # create permission and assign ...Generally we create via admin interface
-        can_read_permission = Permission.objects.create(codename='can_read_gene_idx',
+        can_read_permission = Permission.objects.get_or_create(codename='can_read_gene_idx',
                                                         name='Can Read Gene Idx', content_type=content_type)
 
         # have created permission but not yet assigned to anyone
