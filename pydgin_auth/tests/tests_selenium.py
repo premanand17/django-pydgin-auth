@@ -74,6 +74,6 @@ class AuthorizationTest(TestCase):
                 # Locate Login button and click it
                 br.find_element_by_xpath('//input[@value="login"]').click()
                 html_source = br.page_source
-                self.assertTrue("Search" in html_source, "Logout present in html_source")
+                self.assertTrue("Search" in html_source, "Search present in html_source")
                 self.assertTrue("prem_ro" in html_source, "prem_ro present in html_source")
                 self.assertTrue("Logout" in html_source, "Logout present in html_source")
