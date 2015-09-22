@@ -79,7 +79,7 @@ class ElasticPermissionModelFactory():
 
     @classmethod
     def get_elastic_model_names(cls, as_list=False):
-        '''returns the name of the models to be created based in IDX settings'''
+        '''returns the name of the models assigned to IDX and IDX_TYPES as dict'''
 
         model_names = {}
         model_names['IDX'] = {}
@@ -116,7 +116,7 @@ class ElasticPermissionModelFactory():
 
     @classmethod
     def get_elastic_model_names_list(cls, model_names_dict):
-        '''returns the name of the models to be created based in IDX settings'''
+        '''returns the name of the models to be created based in IDX settings as list'''
         model_names_list = []
         model_types_list = []
 

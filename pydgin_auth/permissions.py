@@ -26,7 +26,8 @@ def check_index_perms(user, idx_names, idx_types=None):
 
 
 def _check_content_type_perms(idx_names, user, idx_type=False):
-
+    ''' Fetch content type and apply it as filter to Permission models,
+     and check if the user has perm to see the code_name'''
     idx_names_auth = []
     for idx in idx_names:
 

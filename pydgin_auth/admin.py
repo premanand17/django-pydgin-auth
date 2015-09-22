@@ -83,5 +83,5 @@ admin.site.register(User, UserAdmin)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Permission)
 
-# ======================
+# call to create elastic models based on the elastic settings
 ElasticPermissionModelFactory.create_dynamic_models()
