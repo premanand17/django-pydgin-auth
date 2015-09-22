@@ -135,8 +135,9 @@ class PydginAuthTestCase(TestCase):
         self.assertTrue('gene' not in idx_names_after_check, 'Index gene could not be seen')
 
         # create permission and assign ...Generally we create via admin interface
-        can_read_permission = Permission.objects.get_or_create(codename='can_read_gene_idx',
-                                                        name='Can Read Gene Idx', content_type=content_type)
+        can_read_permission, create = Permission.objects.get_or_create(codename='can_read_gene_idx',  # @UnusedVariable
+                                                                       name='Can Read Gene Idx',
+                                                                       content_type=content_type)
 
         # have created permission but not yet assigned to anyone
         idx_names_after_check, idx_types_after_check = check_index_perms(dil_user, idx_names)  # @UnusedVariable
