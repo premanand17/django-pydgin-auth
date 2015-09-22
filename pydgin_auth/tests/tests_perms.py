@@ -121,7 +121,7 @@ class PydginAuthTestCase(TestCase):
         self.assertTrue("READ" in all_groups_of_dil_user, "Found READ in groups")
 
         # create the content type
-        test_idx = 'gene'
+        test_idx = 'disease'
         test_model = test_idx.lower() + ElasticPermissionModelFactory.PERMISSION_MODEL_SUFFIX
         idx_names = [test_model]
 
@@ -132,11 +132,11 @@ class PydginAuthTestCase(TestCase):
 
         # check if you can see the index
         idx_names_after_check, idx_types_after_check = check_index_perms(dil_user, idx_names)  # @UnusedVariable
-        self.assertTrue('gene' not in idx_names_after_check, 'Index gene could not be seen')
+        self.assertTrue('disease' not in idx_names_after_check, 'Index disease could not be seen')
 
         # create permission and assign ...Generally we create via admin interface
-        can_read_permission, create = Permission.objects.get_or_create(codename='can_read_gene_idx',  # @UnusedVariable
-                                                                       name='Can Read Gene Idx',
+        can_read_permission, create = Permission.objects.get_or_create(codename='can_read_disease_idx',  # @UnusedVariable
+                                                                       name='Can Read disease Idx',
                                                                        content_type=content_type)
 
         # have created permission but not yet assigned to anyone
@@ -144,19 +144,19 @@ class PydginAuthTestCase(TestCase):
         self.assertFalse('gene' in idx_names_after_check, 'Index gene could not not be seen')
 
         # As we have not yet assigned the permission to dil_user the test should return False
-        self.assertFalse(dil_user.has_perm('elastic.can_read_gene_idx'),
-                         "dil_user has no perm 'elastic.can_read_gene_idx' yet ")
+        self.assertFalse(dil_user.has_perm('elastic.can_read_disease_idx'),
+                         "dil_user has no perm 'elastic.can_read_disease_idx' yet ")
 
         # Add the permission to dil_group
         dil_group.permissions.add(can_read_permission)
         dil_user = get_object_or_404(User, pk=dil_user.id)
         available_group_perms = dil_user.get_group_permissions()
-        self.assertTrue('elastic.can_read_gene_idx' in available_group_perms,
-                        "dil_user has perm 'elastic.can_read_gene_idx' yet ")
+        self.assertTrue('elastic.can_read_disease_idx' in available_group_perms,
+                        "dil_user has perm 'elastic.can_read_disease_idx' yet ")
 
         idx_names_after_check, idx_types_after_check = check_index_perms(dil_user, idx_names)  # @UnusedVariable
 
         # As we have assigned the permission to dil_user the test should return True
-        self.assertTrue(dil_user.has_perm('elastic.can_read_gene_idx'),
-                        "dil_user has perm 'elastic.can_read_gene_idx' ")
-        self.assertTrue('gene_idx' in idx_names_after_check, 'Index gene could be seen')
+        self.assertTrue(dil_user.has_perm('elastic.can_read_disease_idx'),
+                        "dil_user has perm 'elastic.can_read_disease_idx' ")
+        self.assertTrue('disease_idx' in idx_names_after_check, 'Index disease could be seen')
