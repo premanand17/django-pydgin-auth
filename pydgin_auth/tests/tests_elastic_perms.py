@@ -32,7 +32,7 @@ class PydginAuthElasticTestCase(TestCase):
         '''Create test user and test client'''
         self.client = Client()
         self.factory = RequestFactory()
-        self.default_group = Group.objects.create(name='READ')
+        self.default_group, created = Group.objects.get_or_create(name='READ')  # @UnusedVariable
 
         self.user = User.objects.create_user(
             username='test_user', email='test@test.com', password='test_pass')
