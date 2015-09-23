@@ -16,9 +16,13 @@ def check_index_perms(user, idx_names, idx_types=None):
     idx_types_auth = []
 
     idx_names_auth = _check_content_type_perms(idx_names, user)
+    idx_names_auth_ori = [idx_name.replace(ElasticPermissionModelFactory.PERMISSION_MODEL_SUFFIX, '')
+                          for idx_name in idx_names_auth]
 
     if idx_types:
-        idx_types_auth = _check_content_type_perms(idx_types, user)
+        idx_types_filtered = [idx_type for idx_name in idx_names_auth_ori
+                              for idx_type in idx_types if idx_type.startswith(idx_name)]
+        idx_types_auth = _check_content_type_perms(idx_types_filtered, user)
 
     logger.debug('After permission check-name' + str(idx_names_auth))
     logger.debug('After permission check-type' + str(idx_types_auth))
@@ -34,7 +38,6 @@ def _check_content_type_perms(idx_names, user):
 
         app_name = ElasticPermissionModelFactory.PERMISSION_MODEL_APP_NAME
         model_name = idx
-        print('Model name ' + model_name)
         content_type = None
         try:
             content_type = ContentType.objects.get(model=model_name, app_label=app_name)
