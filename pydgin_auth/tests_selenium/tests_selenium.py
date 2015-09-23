@@ -17,7 +17,6 @@ SELENIUM = getattr(settings, 'SELENIUM', {})
 logger.debug(SELENIUM)
 HEADLESS = SELENIUM.get('HEADLESS', True)
 HOST = SELENIUM.get('HOST', "http://localhost:8000")
-HOST = "http://prem-rh1:8000"
 
 
 def setUpModule():
