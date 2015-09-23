@@ -32,17 +32,17 @@ class GlobalPermissionManager(models.Manager):
     def get_query_set(self):
         return super(GlobalPermissionManager, self).\
             get_query_set().filter(content_type__name='global_permission')
- 
- 
+
+
 class GlobalPermission(Permission):
     """ A global permission, not attached to a model"""
- 
+
     objects = GlobalPermissionManager()
- 
+
     class Meta:
         proxy = True
         verbose_name = "global_permission"
- 
+
     def save(self, *args, **kwargs):
         ct, created = ContentType.objects.get_or_create(
             model=self._meta.verbose_name, app_label=self._meta.app_label,
