@@ -1,10 +1,10 @@
 ''' Module to handle permissions..Permissions should be granted via the admin interface'''
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission, User
-import logging
 from django.shortcuts import get_object_or_404
+from pydgin_auth.elastic_model_factory import ElasticPermissionModelFactory
+import logging
 logger = logging.getLogger(__name__)
-from pydgin_auth.admin import ElasticPermissionModelFactory
 
 
 def check_index_perms(user, idx_names, idx_types=None):
