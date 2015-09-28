@@ -12,13 +12,11 @@ Quick start
     pip install -e git://github.com/D-I-L/django-pydgin-auth.git@develop#egg=pydgin-auth
 
 
-2. mkdir django-pydgin-auth/log
-
-3. If you need to start a Django project:: (skip this if you are adding to existing project)
+2. If you need to start a Django project:: (skip this if you are adding to existing project)
 
     django-admin startproject [project_name]
 
-4. Add "pydgin-auth" to your ``INSTALLED_APPS`` in ``settings.py``::
+3. Add "pydgin-auth" to your ``INSTALLED_APPS`` in ``settings.py``::
 
     INSTALLED_APPS = (
         ...
@@ -26,7 +24,7 @@ Quick start
         'auth_test'
     )
 
-5. Add the following lines to your project settings.py::
+4. Add the following lines to your project settings.py::
 
 	AUTH_PROFILE_MODULE = "pydgin_auth.UserProfile"
 	# Import Applicaton-specific Settings
@@ -42,7 +40,7 @@ Quick start
 	        except ImportError:
 	            pass
 
-6. Create users and databases::
+5. Create users and databases::
 
 	sudo -u postgres psql -c "CREATE USER webuser WITH PASSWORD 'webuser';"
 	sudo -u postgres psql -c "ALTER USER webuser CREATEDB;"
@@ -51,7 +49,7 @@ Quick start
 	sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE "pydgin_authdb" TO webuser;"
 	
 
-7. Migrations - Clear migrations if you already have created them::
+6. Migrations - Clear migrations if you already have created them::
 	
 	find $PYENV_HOME -name "000*" -exec rm -rf {} \;
 	find $WORKSPACE/pydgin -name "000*" -exec rm -rf {} \;
@@ -60,7 +58,7 @@ Quick start
 	eg: find /gdxbase/www/xxx-dev/pydgin/pydgin/ -name "000*" -exec rm -rf {} \;
 	
 	
-8. Migrations - Makemigrations::
+7. Migrations - Makemigrations::
 
     ./manage.py makemigrations
     ./manage.py migrate
@@ -68,21 +66,21 @@ Quick start
     ./manage.py makemigrations elastic
     ./manage.py migrate elastic
 
-9. Import test usernames and permissions::
+8. Import test usernames and permissions::
         
 	psql webuser -h localhost -d pydgin_authdb -f ../$PYENV_HOME/src/pydgin_auth/pydgin_auth/static/pydgin_auth/data/pydgin_authdb_data.sql
 	eg: psql webuser -h localhost -d pydgin_authdb -f ../python-env/pydgin_dev/src/pydgin_auth/pydgin_auth/static/pydgin_auth/data/pydgin_authdb_data.sql
 	(Note: password is webuser)
 
-10. Run the server::
+9. Run the server::
 	./manage runserver xxxx-rh1:8000
 	
-11. Tests can be run as follows::
+10. Tests can be run as follows::
 
 	./manage.py test pydgin_auth.tests 
 	./manage.py test auth_test.tests
 
-12. Test site::
+11. Test site::
 	Viist site http://xxxx-rh1:8000/
 	Login and try to access auth_test home at  http://xxxx-rh1:8000/auth_test/
 	
