@@ -12,11 +12,13 @@ Quick start
     pip install -e git://github.com/D-I-L/django-pydgin-auth.git@develop#egg=pydgin-auth
 
 
-2. If you need to start a Django project:: (skip this if you are adding to existing project)
+2. mkdir django-pydgin-auth/log
+
+3. If you need to start a Django project:: (skip this if you are adding to existing project)
 
     django-admin startproject [project_name]
 
-3. Add "pydgin-auth" to your ``INSTALLED_APPS`` in ``settings.py``::
+4. Add "pydgin-auth" to your ``INSTALLED_APPS`` in ``settings.py``::
 
     INSTALLED_APPS = (
         ...
@@ -24,7 +26,7 @@ Quick start
         'auth_test'
     )
 
-4. Add the following lines to your project settings.py::
+5. Add the following lines to your project settings.py::
 
 	AUTH_PROFILE_MODULE = "pydgin_auth.UserProfile"
 	# Import Applicaton-specific Settings
@@ -40,7 +42,7 @@ Quick start
 	        except ImportError:
 	            pass
 
-5. Create users and databases::
+6. Create users and databases::
 
 	sudo -u postgres psql -c "CREATE USER webuser WITH PASSWORD 'webuser';"
 	sudo -u postgres psql -c "ALTER USER webuser CREATEDB;"
@@ -48,40 +50,23 @@ Quick start
 	sudo -u postgres psql -c "CREATE database pydgin_authdb;"
 	sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE "pydgin_authdb" TO webuser;"
 	
-	sudo -u postgres psql -c "CREATE database pydgin_coredb;"
-	sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE "pydgin_coredb" TO webuser;"
 
-
-6. Migrations - Clear migrations if you already have created them::
+7. Migrations - Clear migrations if you already have created them::
 	
 	find $PYENV_HOME -name "000*" -exec rm -rf {} \;
 	find $WORKSPACE/pydgin -name "000*" -exec rm -rf {} \;
 
 	eg: find /gdxbase/www/xxx-dev/python-env/[VIRTUAL_ENV]/lib/python3.4/site-packages/ -name "000*" -exec rm -rf {} \;
 	eg: find /gdxbase/www/xxx-dev/pydgin/pydgin/ -name "000*" -exec rm -rf {} \;
-
 	
-7. Migrations - Makemigrations::
+	
+8. Migrations - Makemigrations::
 
-	./manage.py makemigrations admin
-	./manage.py makemigrations auth
-	./manage.py makemigrations contenttypes
-	./manage.py makemigrations sessions
-	./manage.py makemigrations authtoken
-	./manage.py makemigrations pydgin_auth
-	./manage.py makemigrations auth_test
+    ./manage.py makemigrations
+    ./manage.py migrate
 
-8. Migrations - Migrate in the following order::
-
-	./manage.py migrate admin --database=pydgin_authdb
-	./manage.py migrate sessions --database=pydgin_authdb
-	./manage.py migrate authtoken --database=pydgin_authdb
-	./manage.py migrate pydgin_auth --database=pydgin_authdb
-	./manage.py migrate auth_test --database=pydgin_authdb
-		
-	./manage.py makemigrations elastic
-	./manage.py migrate elastic --database=pydgin_authdb
-	./manage.py migrate  --database=default
+    ./manage.py makemigrations elastic
+    ./manage.py migrate elastic
 
 9. Import test usernames and permissions::
         
