@@ -1,12 +1,14 @@
 from django.test import TestCase
-from django.db import router
 from django.contrib.auth.models import User, Group, Permission
 from django.test.client import RequestFactory, Client
 import logging
 from django.contrib.contenttypes.models import ContentType
-from pydgin_auth.admin import ElasticPermissionModelFactory
-from pydgin_auth.permissions import check_index_perms
 from django.shortcuts import get_object_or_404
+
+from pydgin_auth.admin import ElasticPermissionModelFactory
+from pydgin_auth.permissions import get_authenticated_idx_and_idx_types, get_elastic_model_names
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -27,17 +29,147 @@ class PydginAuthTestCase(TestCase):
         self.user.groups.add(self.group)
         ElasticPermissionModelFactory.create_dynamic_models()
 
-    def test_routers(self):
-        '''Test if the routers are available to route to different databases'''
-        logger.debug('running test_routers')
-        self.original_routers = router.routers
+    def test_get_elastic_model_names(self):
+        idx_keys = ['GENE', 'PUBLICATION', 'MARKER', 'DISEASE']
+        idx_type_keys = ['GENE.GENE', 'GENE.PATHWAY', 'GENE.INTERACTIONS', 'PUBLICATION.PUBLICATION', 'MARKER.MARKER',
+                         'MARKER.HISTORY', 'MARKER.IC', 'DISEASE.DISEASE']
 
-        routers = []
-        for router_ in self.original_routers:
-            routers.append(router_.__class__.__name__)
+        model_names = get_elastic_model_names(idx_keys, idx_type_keys)
 
-        self.assertTrue('AuthRouter' in routers, "Found AuthRouter in routers")
-        self.assertTrue('DefaultRouter' in routers, "Found DefaultRouter in routers")
+        self.assertIn('IDX', model_names, 'IDX in dict')
+        idx = model_names['IDX']
+
+        self.assertIn('IDX_TYPE', model_names, 'IDX_TYPE in dict')
+        idx_type = model_names['IDX_TYPE']
+
+        self.assertEqual(idx['MARKER'], 'marker_idx')
+        self.assertEqual(idx['GENE'], 'gene_idx')
+        self.assertEqual(idx['PUBLICATION'], 'publication_idx')
+        self.assertEqual(idx['DISEASE'], 'disease_idx')
+
+        self.assertIn('marker-marker_idx_type', idx_type['MARKER.MARKER'])
+        self.assertIn('marker-rs_merge_idx_type', idx_type['MARKER.HISTORY'])
+        self.assertIn('marker-immunochip_idx_type', idx_type['MARKER.IC'])
+
+        self.assertIn('gene-gene_idx_type', idx_type['GENE.GENE'])
+        self.assertIn('gene-pathway_genesets_idx_type', idx_type['GENE.PATHWAY'])
+        self.assertIn('gene-interactions_idx_type', idx_type['GENE.INTERACTIONS'])
+
+        self.assertIn('publication-publication_idx_type', idx_type['PUBLICATION.PUBLICATION'])
+
+        self.assertIn('disease-disease_idx_type', idx_type['DISEASE.DISEASE'])
+
+    def test_get_authenticated_idx_and_idx_types(self):
+        idx_keys = ['GENE', 'PUBLICATION', 'MARKER', 'DISEASE']
+        idx_type_keys = ['GENE.GENE', 'GENE.PATHWAY', 'GENE.INTERACTIONS', 'PUBLICATION.PUBLICATION', 'MARKER.MARKER',
+                         'MARKER.HISTORY', 'MARKER.IC', 'DISEASE.DISEASE']
+
+        # We have not set the permissions yet, so we expect to get back everything
+        (idx_keys_auth, idx_type_keys_auth) = get_authenticated_idx_and_idx_types(self.user, idx_keys, idx_type_keys)
+
+        self.assertIn('MARKER', idx_keys_auth)
+        self.assertIn('GENE', idx_keys_auth)
+        self.assertIn('PUBLICATION', idx_keys_auth)
+        self.assertIn('DISEASE', idx_keys_auth)
+
+        self.assertIn('GENE.GENE', idx_type_keys_auth)
+        self.assertIn('GENE.PATHWAY', idx_type_keys_auth)
+        self.assertIn('GENE.INTERACTIONS', idx_type_keys_auth)
+
+        self.assertIn('PUBLICATION.PUBLICATION', idx_type_keys_auth)
+
+        self.assertIn('MARKER.MARKER', idx_type_keys_auth)
+        self.assertIn('MARKER.MARKER', idx_type_keys_auth)
+        self.assertIn('MARKER.MARKER', idx_type_keys_auth)
+
+        self.assertIn('DISEASE.DISEASE', idx_type_keys_auth)
+
+        # Create test_dil user and assign the user to DIL group
+        dil_group, created = Group.objects.get_or_create(name='DIL')
+        self.assertTrue(created)
+        dil_user = User.objects.create_user(
+            username='test_dil', email='test_dil@test.com', password='test123')
+        dil_user.groups.add(dil_group)
+        self.assertTrue(dil_user.groups.filter(name='DIL').exists())
+
+        all_groups_of_dil_user = dil_user.groups.values_list('name', flat=True)
+        self.assertTrue("DIL" in all_groups_of_dil_user, "Found DIL in groups")
+        self.assertTrue("READ" in all_groups_of_dil_user, "Found READ in groups")
+
+        # create the content type
+        test_model = 'disease_idx'
+
+        # create permissions on models and retest again to check if the idx could be seen
+        content_type, created = ContentType.objects.get_or_create(  # @UnusedVariable
+            model=test_model, app_label=ElasticPermissionModelFactory.PERMISSION_MODEL_APP_NAME,
+        )
+
+        # create permission and assign ...Generally we create via admin interface
+        can_read_permission, create = Permission.objects.get_or_create(  # @UnusedVariable
+            codename='can_read_disease_idx',
+            name='Can Read disease Idx',
+            content_type=content_type)
+
+        # check if you can see the index
+        (idx_keys_auth, idx_type_keys_auth) = get_authenticated_idx_and_idx_types(self.user, idx_keys, idx_type_keys)
+        self.assertNotIn('DISEASE', idx_keys_auth)
+
+        # now grant access to test_dil and check if the user can see the index
+        # Add the permission to dil_group
+        dil_group.permissions.add(can_read_permission)
+        dil_user = get_object_or_404(User, pk=dil_user.id)
+        available_group_perms = dil_user.get_group_permissions()
+        self.assertTrue('elastic.can_read_disease_idx' in available_group_perms,
+                        "dil_user has perm 'elastic.can_read_disease_idx' ")
+
+        # check if you can see the index
+        (idx_keys_auth, idx_type_keys_auth) = get_authenticated_idx_and_idx_types(dil_user, idx_keys, idx_type_keys)
+        self.assertIn('DISEASE', idx_keys_auth, 'dil_user can see the disease_idx')
+
+        # test type now
+
+        # create the content type
+        test_model_type = 'marker-rs_merge_idx_type'
+
+        # create permissions on models and retest again to check if the idx could be seen
+        content_type, created = ContentType.objects.get_or_create(  # @UnusedVariable
+            model=test_model_type, app_label=ElasticPermissionModelFactory.PERMISSION_MODEL_APP_NAME,
+        )
+
+        # create permission and assign ...Generally we create via admin interface
+        can_read_permission, create = Permission.objects.get_or_create(  # @UnusedVariable
+            codename='can_read_marker-rs_merge',
+            name='Can Read marker rs merge Idx type',
+            content_type=content_type)
+
+        # check if you can see the index type
+        (idx_keys_auth, idx_type_keys_auth) = get_authenticated_idx_and_idx_types(dil_user, idx_keys, idx_type_keys)
+        self.assertNotIn('MARKER.HISTORY', idx_keys_auth)
+
+        # now grant access to test_dil and check if the user can see the index
+        # Add the permission to dil_group
+        dil_group.permissions.add(can_read_permission)
+        dil_user = get_object_or_404(User, pk=dil_user.id)
+        available_group_perms = dil_user.get_group_permissions()
+        self.assertTrue('elastic.can_read_marker-rs_merge' in available_group_perms,
+                        "dil_user has perm 'elastic.can_read_marker-rs_merge' ")
+
+        # check if you can see the index type
+        (idx_keys_auth, idx_type_keys_auth) = get_authenticated_idx_and_idx_types(dil_user, idx_keys, idx_type_keys)
+        self.assertIn('MARKER.HISTORY', idx_type_keys_auth)
+
+
+#     def test_routers(self):
+#         '''Test if the routers are available to route to different databases'''
+#         logger.debug('running test_routers')
+#         self.original_routers = router.routers
+#
+#         routers = []
+#         for router_ in self.original_routers:
+#             routers.append(router_.__class__.__name__)
+#
+#         self.assertTrue('AuthRouter' in routers, "Found AuthRouter in routers")
+#         self.assertTrue('DefaultRouter' in routers, "Found DefaultRouter in routers")
 
     def test_login(self):
         '''Test login. First try to login with invalid credentials, and try again with right credentials again'''
@@ -106,58 +238,3 @@ class PydginAuthTestCase(TestCase):
         pydgin_admin_group, created = Group.objects.get_or_create(name='ADMIN')
         self.assertEqual(pydgin_admin_group.name, "ADMIN")
         self.assertTrue(created)
-
-    def test_users_groups_perms(self):
-        '''Test to create users, create groups, assign users to group, check permissions'''
-        dil_group, created = Group.objects.get_or_create(name='DIL')
-        self.assertTrue(created)
-        dil_user = User.objects.create_user(
-            username='test_dil', email='test_dil@test.com', password='test123')
-        dil_user.groups.add(dil_group)
-        self.assertTrue(dil_user.groups.filter(name='DIL').exists())
-
-        all_groups_of_dil_user = dil_user.groups.values_list('name', flat=True)
-        self.assertTrue("DIL" in all_groups_of_dil_user, "Found DIL in groups")
-        self.assertTrue("READ" in all_groups_of_dil_user, "Found READ in groups")
-
-        # create the content type
-        test_idx = 'disease'
-        test_model = test_idx.lower() + ElasticPermissionModelFactory.PERMISSION_MODEL_SUFFIX
-        idx_names = [test_model]
-
-        # create permissions on models and retest again to check if the idx could be seen
-        content_type, created = ContentType.objects.get_or_create(
-            model=test_model, app_label="elastic",
-        )
-
-        # check if you can see the index
-        idx_names_after_check, idx_types_after_check = check_index_perms(dil_user, idx_names)  # @UnusedVariable
-        self.assertTrue('disease' not in idx_names_after_check, 'Index disease could not be seen')
-
-        # create permission and assign ...Generally we create via admin interface
-        can_read_permission, create = Permission.objects.get_or_create(  # @UnusedVariable
-            codename='can_read_disease_idx',
-            name='Can Read disease Idx',
-            content_type=content_type)
-
-        # have created permission but not yet assigned to anyone
-        idx_names_after_check, idx_types_after_check = check_index_perms(dil_user, idx_names)  # @UnusedVariable
-        self.assertFalse('gene' in idx_names_after_check, 'Index gene could not not be seen')
-
-        # As we have not yet assigned the permission to dil_user the test should return False
-        self.assertFalse(dil_user.has_perm('elastic.can_read_disease_idx'),
-                         "dil_user has no perm 'elastic.can_read_disease_idx' yet ")
-
-        # Add the permission to dil_group
-        dil_group.permissions.add(can_read_permission)
-        dil_user = get_object_or_404(User, pk=dil_user.id)
-        available_group_perms = dil_user.get_group_permissions()
-        self.assertTrue('elastic.can_read_disease_idx' in available_group_perms,
-                        "dil_user has perm 'elastic.can_read_disease_idx' yet ")
-
-        idx_names_after_check, idx_types_after_check = check_index_perms(dil_user, idx_names)  # @UnusedVariable
-
-        # As we have assigned the permission to dil_user the test should return True
-        self.assertTrue(dil_user.has_perm('elastic.can_read_disease_idx'),
-                        "dil_user has perm 'elastic.can_read_disease_idx' ")
-        self.assertTrue('disease_idx' in idx_names_after_check, 'Index disease could be seen')

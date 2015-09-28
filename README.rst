@@ -48,9 +48,6 @@ Quick start
 	sudo -u postgres psql -c "CREATE database pydgin_authdb;"
 	sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE "pydgin_authdb" TO webuser;"
 	
-	sudo -u postgres psql -c "CREATE database pydgin_coredb;"
-	sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE "pydgin_coredb" TO webuser;"
-
 
 6. Migrations - Clear migrations if you already have created them::
 	
@@ -59,45 +56,31 @@ Quick start
 
 	eg: find /gdxbase/www/xxx-dev/python-env/[VIRTUAL_ENV]/lib/python3.4/site-packages/ -name "000*" -exec rm -rf {} \;
 	eg: find /gdxbase/www/xxx-dev/pydgin/pydgin/ -name "000*" -exec rm -rf {} \;
-
+	
 	
 7. Migrations - Makemigrations::
 
-	./manage.py makemigrations admin
-	./manage.py makemigrations auth
-	./manage.py makemigrations contenttypes
-	./manage.py makemigrations sessions
-	./manage.py makemigrations authtoken
-	./manage.py makemigrations pydgin_auth
-	./manage.py makemigrations auth_test
+    ./manage.py makemigrations
+    ./manage.py migrate
 
-8. Migrations - Migrate in the following order::
+    ./manage.py makemigrations elastic
+    ./manage.py migrate elastic
 
-	./manage.py migrate admin --database=pydgin_authdb
-	./manage.py migrate sessions --database=pydgin_authdb
-	./manage.py migrate authtoken --database=pydgin_authdb
-	./manage.py migrate pydgin_auth --database=pydgin_authdb
-	./manage.py migrate auth_test --database=pydgin_authdb
-		
-	./manage.py makemigrations elastic
-	./manage.py migrate elastic --database=pydgin_authdb
-	./manage.py migrate  --database=default
-
-9. Import test usernames and permissions::
+8. Import test usernames and permissions::
         
 	psql webuser -h localhost -d pydgin_authdb -f ../$PYENV_HOME/src/pydgin_auth/pydgin_auth/static/pydgin_auth/data/pydgin_authdb_data.sql
 	eg: psql webuser -h localhost -d pydgin_authdb -f ../python-env/pydgin_dev/src/pydgin_auth/pydgin_auth/static/pydgin_auth/data/pydgin_authdb_data.sql
 	(Note: password is webuser)
 
-10. Run the server::
+9. Run the server::
 	./manage runserver xxxx-rh1:8000
 	
-11. Tests can be run as follows::
+10. Tests can be run as follows::
 
 	./manage.py test pydgin_auth.tests 
 	./manage.py test auth_test.tests
 
-12. Test site::
+11. Test site::
 	Viist site http://xxxx-rh1:8000/
 	Login and try to access auth_test home at  http://xxxx-rh1:8000/auth_test/
 	
