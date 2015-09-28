@@ -1,3 +1,6 @@
+from django.conf import settings
+
+
 class AuthRouter(object):
     """
     A router to control database operations on models. We can customize which database to use for which application
@@ -5,7 +8,7 @@ class AuthRouter(object):
     APP_LIST = ('auth', 'admin', 'pydgin_auth', 'contenttypes', 'sessions', 'staticfiles', 'authtoken', 'elastic')
 
     # remember this is the key of the database definitions in the settings file
-    AUTH_DB = 'pydgin_authdb'
+    AUTH_DB = settings.AUTH_DB
 
     def db_for_read(self, model, **hints):
         """

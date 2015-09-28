@@ -9,6 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from elastic.elastic_settings import ElasticSettings
 import logging
 from django.db import connections
+from django.conf import settings
 logger = logging.getLogger(__name__)
 
 
@@ -69,7 +70,7 @@ class ElasticPermissionModelFactory():
     def create_dynamic_models(cls):
         '''main function that delegates the call to create the proxy models and managers for elastic indexes'''
         (model_names, model_types) = cls.get_elastic_model_names(as_list=True)
-        connection = connections['pydgin_authdb']
+        connection = connections[settings.AUTH_DB]
 
         if "django_content_type" in connection.introspection.table_names():
             for model_name in (model_names + model_types):
@@ -86,7 +87,6 @@ class ElasticPermissionModelFactory():
         model_names['IDX_TYPE'] = {}
 
         elastic_dict = ElasticSettings.attrs().get('IDX')
-
         elastic_idx_names = list(elastic_dict.keys())
 
         for els_idx in elastic_idx_names:
@@ -97,9 +97,8 @@ class ElasticPermissionModelFactory():
 
             index_dict = elastic_dict[els_idx]
 
-            if 'search_engine' in index_dict:
-                idx_types = list(index_dict['search_engine'])
-
+            if 'idx_type' in index_dict:
+                idx_types = [v['type'] for k, v in index_dict['idx_type'].items() if 'type' in v]  # @UnusedVariable
                 for idx_type in idx_types:
                     model_name = els_idx.lower() + cls.PERMISSION_MODEL_NAME_TYPE_DELIMITER + \
                         idx_type.lower() + cls.PERMISSION_MODEL_TYPE_SUFFIX
@@ -108,7 +107,6 @@ class ElasticPermissionModelFactory():
                         idx_types.append(model_name)
                     else:
                         model_names['IDX_TYPE'][els_idx] = [model_name]
-
         if as_list:
             return cls.get_elastic_model_names_list(model_names)
         else:
