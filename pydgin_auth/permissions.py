@@ -148,4 +148,3 @@ def get_user_groups(user):
         current_user_groups.append(group.name)
 
     return current_user_groups
-
