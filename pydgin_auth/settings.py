@@ -9,6 +9,8 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 LOGIN_EXEMPT_URLS is used by login_required_middleware
 """
+import os
+import sys
 
 
 LOGIN_REDIRECT_URL = '/'
@@ -20,3 +22,7 @@ LOGIN_EXEMPT_URLS = (r'^pydgin_auth',
                      r'^$',
                      )
 RUN_PERMS_MODEL = True
+
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_DIR = os.path.dirname(__file__)
+sys.path.insert(0, os.path.join(PROJECT_DIR, 'local_apps'))

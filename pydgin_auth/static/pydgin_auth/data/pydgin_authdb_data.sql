@@ -25,28 +25,13 @@ COPY auth_group (id, name) FROM stdin;
 -- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: prem
 --
 
-SELECT pg_catalog.setval('auth_group_id_seq', 4, true);
+--SELECT pg_catalog.setval('auth_group_id_seq', 4, true);
+SELECT pg_catalog.setval('auth_group_id_seq', coalesce(max("id"), 1), max("id") IS NOT null) FROM "auth_group";
 
 
 --
--- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: prem
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: prem Not copied
 --
-
---COPY django_content_type (id, app_label, model) FROM stdin;
---1	admin	logentry
---2	auth	permission
---3	auth	group
---4	auth	user
---5	contenttypes	contenttype
---6	sessions	session
---7	authtoken	token
---8	pydgin_auth	userprofile
---9	pydgin_auth	globalpermission
---10	auth_test	authtestpermission
---38	elastic	gene_elastic_permission
---39	elastic	marker_elastic_permission
---40	elastic	publication_elastic_permission
---\.
 
 
 --
@@ -75,14 +60,16 @@ COPY auth_group_permissions (id, group_id, permission_id) FROM stdin;
 -- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: prem
 --
 
-SELECT pg_catalog.setval('auth_group_permissions_id_seq', 15, true);
+--SELECT pg_catalog.setval('auth_group_permissions_id_seq', 15, true);
+SELECT pg_catalog.setval('auth_group_permissions_id_seq', coalesce(max("id"), 1), max("id") IS NOT null) FROM "auth_group_permissions";
 
 
 --
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: prem
 --
 
-SELECT pg_catalog.setval('auth_permission_id_seq', 38, true);
+--SELECT pg_catalog.setval('auth_permission_id_seq', 38, true);
+SELECT pg_catalog.setval('auth_permission_id_seq', coalesce(max("id"), 1), max("id") IS NOT null) FROM "auth_permission";
 
 
 --
@@ -118,15 +105,16 @@ COPY auth_user_groups (id, user_id, group_id) FROM stdin;
 -- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: prem
 --
 
-SELECT pg_catalog.setval('auth_user_groups_id_seq', 16, true);
+--SELECT pg_catalog.setval('auth_user_groups_id_seq', 16, true);
+SELECT pg_catalog.setval('auth_user_groups_id_seq', coalesce(max("id"), 1), max("id") IS NOT null) FROM "auth_user_groups";
 
 
 --
 -- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: prem
 --
 
-SELECT pg_catalog.setval('auth_user_id_seq', 11, true);
-
+--SELECT pg_catalog.setval('auth_user_id_seq', 11, true);
+SELECT pg_catalog.setval('auth_user_id_seq', coalesce(max("id"), 1), max("id") IS NOT null) FROM "auth_user";
 
 --
 -- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: prem
@@ -140,7 +128,8 @@ COPY auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
 -- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: prem
 --
 
-SELECT pg_catalog.setval('auth_user_user_permissions_id_seq', 1, false);
+--SELECT pg_catalog.setval('auth_user_user_permissions_id_seq', 1, false);
+SELECT pg_catalog.setval('auth_user_user_permissions_id_seq', coalesce(max("id"), 1), max("id") IS NOT null) FROM "auth_user_user_permissions";
 
 
 --
@@ -158,48 +147,8 @@ fa9d3023e0a31cc6bd40ddb0cf337ebbcf176974	2015-07-31 14:20:53.469208+01	6
 
 
 --
--- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: prem
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: prem Not copied
 --
-
---COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
---1	2015-07-22 11:20:14.771839+01	28	pydgin_auth | global_permission | Can read only	1		2	1
---2	2015-07-22 11:24:20.869202+01	1	READ	1		3	1
---3	2015-07-22 11:24:29.822029+01	2	DIL	1		3	1
---4	2015-07-22 11:24:55.079537+01	3	PYDGIN_ADMIN	1		3	1
---5	2015-07-22 11:25:11.745195+01	4	CURATOR	1		3	1
---6	2015-07-22 11:33:06.780943+01	2	prem_ro	3		4	1
---7	2015-07-22 11:43:16.5422+01	1	READ	2	Changed permissions.	3	1
---8	2015-07-22 14:11:39.82382+01	4	prem_admin	2	Changed groups.	4	1
---9	2015-07-22 14:12:08.755597+01	6	prem_curator	2	Changed groups.	4	1
---10	2015-07-22 14:12:30.81386+01	5	prem_dil	2	Changed groups.	4	1
---11	2015-07-23 09:27:04.695959+01	32	auth_test | auth_test_permissions | Can read auth test data	1		2	1
---12	2015-07-23 09:39:32.926732+01	1	READ	2	Changed permissions.	3	1
---13	2015-07-23 10:34:02.049041+01	33	auth_test | auth_test_permissions | Can read curate data	1		2	1
---14	2015-07-23 10:34:57.614746+01	4	CURATOR	2	Changed permissions.	3	1
---15	2015-07-23 11:12:13.308813+01	1	READ	2	Changed permissions.	3	1
---16	2015-07-23 11:13:59.646979+01	2	DIL	2	Changed permissions.	3	1
---17	2015-07-23 16:18:34.374252+01	34	auth_test | auth_test_perms | Test perm for auth_test	1		2	1
---18	2015-07-23 16:18:57.902068+01	34	auth_test | auth_test_perms | Test perm for auth_test	3		2	1
---19	2015-07-29 17:45:09.065258+01	35	elastic | gene_elastic_permission | elastic	1		38	1
---20	2015-07-29 17:46:09.502255+01	35	elastic | gene_elastic_permission | can_read_gene_elastic	2	Changed name.	38	1
---21	2015-07-29 17:46:42.55436+01	36	elastic | marker_elastic_permission | can_read_marker_elastic	1		39	1
---22	2015-07-30 10:27:11.423342+01	37	elastic | publication_elastic_permission | can_read_publication_elastic	1		40	1
---23	2015-07-30 10:29:26.293395+01	1	READ	2	Changed permissions.	3	1
---24	2015-07-30 11:18:24.489946+01	1	READ	2	Changed permissions.	3	1
---25	2015-07-30 11:18:58.670571+01	35	elastic | gene_elastic_permission | can_read_gene_elastic	3		38	1
---26	2015-07-30 11:19:06.716747+01	37	elastic | publication_elastic_permission | can_read_publication_elastic	3		40	1
---27	2015-07-30 12:05:36.859836+01	1	READ	2	Changed permissions.	3	1
---28	2015-07-30 13:35:03.556592+01	1	READ	2	Changed permissions.	3	1
---29	2015-07-30 13:37:13.89116+01	38	elastic | gene_elastic_permission | can_read_gene_elastic	1		38	1
---30	2015-07-30 13:38:12.246409+01	38	elastic | gene_elastic_permission | can_read_gene_elastic	3		38	1
---31	2015-07-30 13:38:34.07787+01	1	READ	2	Changed permissions.	3	1
---32	2015-07-31 12:15:56.090238+01	7	dummyuser	3		4	1
---33	2015-07-31 14:17:47.081649+01	8	dummyuser	3		4	1
---34	2015-07-31 14:17:47.085132+01	9	testuser	3		4	1
---35	2015-08-03 09:38:47.338476+01	4	prem_admin	3		4	1
---36	2015-08-03 09:39:04.215341+01	3	PYDGIN_ADMIN	3		3	1
---\.
-
 
 --
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: prem
@@ -212,25 +161,12 @@ fa9d3023e0a31cc6bd40ddb0cf337ebbcf176974	2015-07-31 14:20:53.469208+01	6
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: prem
 --
 
-SELECT pg_catalog.setval('django_content_type_id_seq', 15, true);
+SELECT pg_catalog.setval('django_content_type_id_seq', coalesce(max("id"), 1), max("id") IS NOT null) FROM "django_content_type";
 
 
 --
--- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: prem
+-- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: prem Not copied
 --
-
---COPY django_migrations (id, app, name, applied) FROM stdin;
---1	contenttypes	0001_initial	2015-07-22 11:05:57.812959+01
---2	auth	0001_initial	2015-07-22 11:05:58.008828+01
---3	admin	0001_initial	2015-07-22 11:05:58.060693+01
---4	sessions	0001_initial	2015-07-22 11:08:16.285183+01
---5	authtoken	0001_initial	2015-07-22 11:08:27.30499+01
---6	pydgin_auth	0001_initial	2015-07-22 11:08:41.384331+01
---7	auth_test	0001_initial	2015-07-23 09:21:56.225542+01
---8	auth_test	0002_auto_20150723_0920	2015-07-23 09:21:56.23793+01
---9	pydgin_auth	0002_userprofile_is_terms_agreed	2015-07-31 12:00:26.157489+01
---\.
-
 
 --
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: prem
@@ -240,17 +176,8 @@ SELECT pg_catalog.setval('django_content_type_id_seq', 15, true);
 
 
 --
--- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: prem
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: prem Not copied
 --
-
---COPY django_session (session_key, session_data, expire_date) FROM stdin;
---v8frh5ipqx3uzx6y2zlcuiv33zewfp2d	ZTU0ZTU5N2FlYTE0MDhkM2FkOGMwMzUyODFhYjFmNjNhY2NlNWI1NDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6IjEiLCJfYXV0aF91c2VyX2hhc2giOiI1OTcwZmMyODdhNTZmZjAxNzc2Yjg3NjU3YjIyODgzNTAxOTI4OTdhIn0=	2015-08-17 09:36:14.49557+01
---q9x43xfbq4jq8vx3pvgfih7mfj643mjo	OThiZWVkODA0NjIwYTEyM2E1ZjdmMTc4ZjZkMGVhZTk3ZDhiZmU2Yjp7Il9hdXRoX3VzZXJfaGFzaCI6ImNhZDY1OTIwMjMxMWRiZGY0NjU5MzlhZjg2NDg2OWI5NTczYmY3YTYiLCJfYXV0aF91c2VyX2lkIjoiMyIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIn0=	2015-08-05 13:41:25.603426+01
---hsoh3xaqelecbi5xsy1k1cbpwulhr6gc	ZWNjM2UwYWYzZmMwZmRjMjBlNzIyYTlmZmRiOTcwMTk3MDcxOTNkZjp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6IjYiLCJfYXV0aF91c2VyX2hhc2giOiJiM2IwN2M4Mjk4Yjk2OGE5ZGZiM2I3ZTU3YTcwOTA4YjY0NjhmMjUxIn0=	2015-08-06 14:51:32.202745+01
---t06415dq2y7i4m5cq44fv6fy4enau6mc	NDY4MjBiY2ZlZWQ1NWZhMThmYzI4NzJlYmFkODJhYzczYWUzNmMyZTp7Il9hdXRoX3VzZXJfaGFzaCI6IjU5NzBmYzI4N2E1NmZmMDE3NzZiODc2NTdiMjI4ODM1MDE5Mjg5N2EiLCJfYXV0aF91c2VyX2lkIjoiMSIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIn0=	2015-08-13 15:20:37.047965+01
---p8dp6avlyube38aeu1vqfgkp5ef1x3x0	MGY5NGViY2EyY2Y1NDZiMzAzMjY5M2E0NTBlMmFlMDZmNzc1ZDYxNTp7Il9hdXRoX3VzZXJfaGFzaCI6ImY0Yzc3MGQxM2RiMWNlNzlhMDJlYjNlOWJkYTlmNmEyMzE4ZTZmZmIiLCJfYXV0aF91c2VyX2lkIjoiNSIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIn0=	2015-08-07 15:59:01.570484+01
---\.
-
 
 --
 -- Data for Name: pydgin_auth_userprofile; Type: TABLE DATA; Schema: public; Owner: prem
@@ -270,7 +197,8 @@ COPY pydgin_auth_userprofile (id, user_id, is_terms_agreed) FROM stdin;
 -- Name: pydgin_auth_userprofile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: prem
 --
 
-SELECT pg_catalog.setval('pydgin_auth_userprofile_id_seq', 10, true);
+--SELECT pg_catalog.setval('pydgin_auth_userprofile_id_seq', 10, true);
+SELECT pg_catalog.setval('pydgin_auth_userprofile_id_seq', coalesce(max("id"), 1), max("id") IS NOT null) FROM "pydgin_auth_userprofile";
 
 
 --
