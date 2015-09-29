@@ -27,7 +27,8 @@ def get_authenticated_idx_and_idx_types(user, idx_keys, idx_type_keys=None):
     if idx_type_keys and 'IDX_TYPE' in model_names:
         model_type_idx = [idx_v for idx_k, idx_v in model_names['IDX_TYPE'].items() if idx_k in idx_type_keys]
         idx_types_auth = _check_content_type_perms(model_type_idx, user)
-        idx_type_keys_auth = [idx_k for idx_k, idx_v in model_names['IDX_TYPE'].items() if idx_v in idx_types_auth]
+        idx_type_keys_auth = [idx_k for idx_k, idx_v in model_names['IDX_TYPE'].items()
+                              if idx_v in idx_types_auth and idx_k.split('.')[0] in idx_keys_auth]
 
     logger.debug('After permission check-name' + str(idx_keys_auth))
     logger.debug('After permission check-type' + str(idx_type_keys_auth))
