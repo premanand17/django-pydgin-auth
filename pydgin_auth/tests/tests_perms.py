@@ -112,7 +112,9 @@ class PydginAuthTestCase(TestCase):
 
         # check if you can see the index
         (idx_keys_auth, idx_type_keys_auth) = get_authenticated_idx_and_idx_types(self.user, idx_keys, idx_type_keys)
+
         self.assertNotIn('DISEASE', idx_keys_auth)
+        self.assertNotIn('DISEASE.DISEASE', idx_type_keys_auth)
 
         # now grant access to test_dil and check if the user can see the index
         # Add the permission to dil_group
