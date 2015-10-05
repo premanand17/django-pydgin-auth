@@ -1,4 +1,7 @@
-{% extends "base.html" %}
+
+ 
+ {% extends basehtmldir|add:"base.html"%} 
+
 
 {% block extra_js %}
 //set login link
@@ -16,6 +19,8 @@
 {% endblock extra_js %}
 
 {% block content %}
+
+
 
     {% if form.errors %}
         <p>The username and password provided is not valid/recognised. Please try again with valid credentials.</p>
