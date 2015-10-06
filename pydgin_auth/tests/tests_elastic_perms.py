@@ -110,8 +110,8 @@ class PydginAuthElasticTestCase(TestCase):
         test_idx_model = model_names_idx[0]
         test_idx_type_model = model_names_idx_types[1]
 
-        self.assertTrue(test_idx_model.endswith('_IDX'), 'Idx model ends with _IDX')
-        self.assertTrue(test_idx_type_model.endswith('_IDX_TYPE'), 'Idx type model ends with _IDX_TYPE')
+        self.assertTrue(test_idx_model.endswith('_idx'), 'Idx model ends with _idx')
+        self.assertTrue(test_idx_type_model.endswith('_idx_type'), 'Idx type model ends with _idx_type')
 
         # create permissions on models and retest again to check if the idx could be seen
         content_type_idx, created_idx = ContentType.objects.get_or_create(  # @UnusedVariable

@@ -52,7 +52,7 @@ class ElasticSearchAuthTest(TestCase):
             self.assertTrue(dil_user.groups.filter(name='DILX').exists())
 
             # create permission for MARKER and IC
-            test_model_name = 'MARKER-IC_IDX_TYPE'
+            test_model_name = 'marker-ic_idx_type'
             # create permissions on models and retest again to check if the idx type could be seen
             content_type, created = ContentType.objects.get_or_create(
                 model=test_model_name, app_label="elastic",

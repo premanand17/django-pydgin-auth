@@ -48,7 +48,7 @@ def create_elastic_index_model(model_name, application_label):
 
     class Meta:
         proxy = True
-        verbose_name = model_name
+        verbose_name = model_name.lower()
         app_label = application_label
 
     ct, created = ContentType.objects.get_or_create(model=Meta.verbose_name,  # @UnusedVariable
@@ -71,8 +71,8 @@ def create_elastic_index_model(model_name, application_label):
 
 class ElasticPermissionModelFactory():
     '''class to create dynamic proxy models and managers for elastic indexes'''
-    PERMISSION_MODEL_SUFFIX = '_IDX'
-    PERMISSION_MODEL_TYPE_SUFFIX = '_IDX_TYPE'
+    PERMISSION_MODEL_SUFFIX = '_idx'
+    PERMISSION_MODEL_TYPE_SUFFIX = '_idx_type'
     PERMISSION_MODEL_NAME_TYPE_DELIMITER = '-'
     PERMISSION_MODEL_APP_NAME = settings.ELASTIC_PERMISSION_MODEL_APP_NAME
 
@@ -139,9 +139,15 @@ class ElasticPermissionModelFactory():
         logger.debug(idx_type_keys_private)
 
         if auth_public:
-            return idx_keys_public, idx_type_keys_public
+            # make case insensitive
+            idx_keys_public_icase = [x.upper() for x in idx_keys_public]
+            idx_type_keys_public_icase = [x.upper() for x in idx_type_keys_public]
+            return idx_keys_public_icase, idx_type_keys_public_icase
         else:
-            return idx_keys_private, idx_type_keys_private
+            # make case insensitive
+            idx_keys_private_icase = [x.upper() for x in idx_keys_private]
+            idx_type_keys_private_icase = [x.upper() for x in idx_type_keys_private]
+            return idx_keys_private_icase, idx_type_keys_private_icase
 
     @classmethod
     def get_elastic_model_names(cls, elastic_dict=None, idx_keys=None, idx_type_keys=None, auth_public=False):
@@ -160,7 +166,10 @@ class ElasticPermissionModelFactory():
             model_name = idx_type_key + cls.PERMISSION_MODEL_TYPE_SUFFIX
             model_names_idx_types.append(model_name)
 
-        return model_names_idx, model_names_idx_types
+        # make case insensitive
+        model_names_idx_icase = [model_name.lower() for model_name in model_names_idx]
+        model_names_idx_types_icase = [model_name_type.lower() for model_name_type in model_names_idx_types]
+        return model_names_idx_icase, model_names_idx_types_icase
 
     @classmethod
     def get_keys_from_model_names(cls, idx_model_names=None, idx_type_model_names=None):
@@ -173,7 +182,10 @@ class ElasticPermissionModelFactory():
                                             '').replace(cls.PERMISSION_MODEL_NAME_TYPE_DELIMITER, '.')
                          for model_name in idx_type_model_names]
 
-        return(idx_keys, idx_type_keys)
+        # make case insensitive
+        idx_keys_icase = [x.upper() for x in idx_keys]
+        idx_type_keys_icase = [x.upper() for x in idx_type_keys]
+        return(idx_keys_icase, idx_type_keys_icase)
 
     @classmethod
     def get_db_models(cls, app_label=PERMISSION_MODEL_APP_NAME, existing=False):

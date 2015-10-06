@@ -62,7 +62,7 @@ def _check_content_type_perms(idx_model_names, user):
         model_name = idx
         content_type = None
         try:
-            content_type = ContentType.objects.get(model=model_name, app_label=app_name)
+            content_type = ContentType.objects.get(model=model_name.lower(), app_label=app_name)
         except:
             logger.debug('Content type not found for ' + str(model_name))
 
