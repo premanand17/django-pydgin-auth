@@ -95,7 +95,10 @@ class ElasticPermissionModelFactory():
     def autoregister(cls, app_label=PERMISSION_MODEL_APP_NAME):
         '''auto register all the models belonging to the given app eg: elastic'''
         for model_ct in ContentType.objects.filter(app_label=app_label):
-            model = apps.get_model(app_label=app_label, model_name=model_ct.model)
+            try:
+                model = apps.get_model(app_label=app_label, model_name=model_ct.model.lower())
+            except:
+                logger.warn('Model not found for ' + model_ct.model.lower())
 
             try:
                 admin.site.register(model)
