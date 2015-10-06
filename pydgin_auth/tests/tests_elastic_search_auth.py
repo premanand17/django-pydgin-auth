@@ -29,10 +29,12 @@ class ElasticSearchAuthTest(TestCase):
     def test_search_props(self):
 
         if 'pydgin_auth' in settings.INSTALLED_APPS:
+            from pydgin_auth.elastic_model_factory import ElasticPermissionModelFactory
             from django.contrib.contenttypes.models import ContentType
             from django.contrib.auth.models import Group, User, Permission
             from django.shortcuts import get_object_or_404
 
+            ElasticPermissionModelFactory.create_dynamic_models()
             search_props = ElasticSettings.search_props("ALL")
 
             idx = search_props['idx']
