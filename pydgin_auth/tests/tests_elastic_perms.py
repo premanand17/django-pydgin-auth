@@ -172,6 +172,8 @@ class PydginAuthElasticTestCase(TestCase):
         # publication idx is publica and publication.publication is private
         idx_keys = ['PUBLICATION']
         idx_type_keys = ['PUBLICATION.PUBLICATION']
+        idx_keys_auth = []
+        idx_type_keys_auth = []
         (idx_keys_auth, idx_type_keys_auth) = get_authenticated_idx_and_idx_types(dil_user,
                                                                                   idx_keys=idx_keys,
                                                                                   idx_type_keys=idx_type_keys)
