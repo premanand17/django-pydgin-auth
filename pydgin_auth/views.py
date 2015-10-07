@@ -10,6 +10,7 @@ import os.path
 from django.contrib.auth.decorators import login_required
 from rest_framework.authtoken.models import Token
 import logging
+from django.conf import settings
 logger = logging.getLogger(__name__)
 
 
@@ -69,6 +70,16 @@ def register(request):
     token.update(csrf(request))
     token['form'] = form
     token['terms_n_condition'] = terms_n_condition_txt
+    token['terms_n_condition'] = terms_n_condition_txt
+
+    try:
+        base_html_dir = settings.BASE_HTML_DIR
+    except AttributeError:
+        base_html_dir = ''
+
+    token['basehtmldir'] = base_html_dir
+
     request_context = RequestContext(request)
     request_context.push({"token": token})
+
     return render(request, 'registration/registration_form.html', token)
