@@ -168,6 +168,18 @@ class PydginAuthElasticTestCase(TestCase):
         self.assertIn('MARKER.HISTORY', idx_type_keys_auth)
         self.assertIn('GENE.GENE', idx_type_keys_auth)
 
+        # pass just one index key and index type and check for returned keys and types
+        # publication idx is publica and publication.publication is private
+        idx_keys = ['PUBLICATION']
+        idx_type_keys = ['PUBLICATION.PUBLICATION']
+        (idx_keys_auth, idx_type_keys_auth) = get_authenticated_idx_and_idx_types(dil_user,
+                                                                                  idx_keys=idx_keys,
+                                                                                  idx_type_keys=idx_type_keys)
+        self.assertIn('PUBLICATION', idx_keys_auth)
+        self.assertNotIn('PUBLICATION.PUBLICATION', idx_type_keys_auth)
+
+        self.assertTrue(len(idx_keys_auth) == 1, 'Got back only one idx')
+
     def test_elastic_group_name(self):
         '''
         Testing the workflow defined in: https://killin.cimr.cam.ac.uk/nextgensite/2015/08/05/region-authorization/

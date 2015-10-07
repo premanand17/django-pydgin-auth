@@ -20,17 +20,21 @@ def get_authenticated_idx_and_idx_types(user=None, idx_keys=None, idx_type_keys=
     idx_keys_auth = []
     idx_type_keys_auth = []
 
-    idx_keys_auth.extend(idx_keys_public)
-    idx_type_keys_auth.extend(idx_type_keys_public)
-
     # idx_keys and idx_type_keys is None, so first fetch private keys
     if idx_keys is None or idx_type_keys is None:
+        # First add all the public keys
+        idx_keys_auth.extend(idx_keys_public)
+        idx_type_keys_auth.extend(idx_type_keys_public)
         (idx_keys_private, idx_type_keys_private) = elastic_factory.get_idx_and_idx_type_keys(auth_public=False)
 
         if idx_keys is None:
             idx_keys = idx_keys_private
         if idx_type_keys is None:
             idx_type_keys = idx_type_keys_private
+    else:
+        # as idx_keys and idx_keys is not None, first add the idx_keys if it is in public keys
+        idx_keys_auth = [idx_key for idx_key in idx_keys if idx_key in idx_keys_public]
+        idx_type_keys_auth = [idx_key for idx_key in idx_type_keys if idx_key in idx_type_keys_public]
 
     (model_names_idx, model_names_idx_types) = elastic_factory.get_elastic_model_names(idx_keys=idx_keys,
                                                                                            idx_type_keys=idx_type_keys)  # @IgnorePep8
@@ -42,13 +46,14 @@ def get_authenticated_idx_and_idx_types(user=None, idx_keys=None, idx_type_keys=
                                                                            model_names_idx_types_auth)
 
     if idx_auth is not None and len(idx_auth) > 0:
-        idx_keys_auth.extend(idx_auth)
+        for idx in idx_auth:
+            if idx not in idx_keys_auth:
+                idx_keys_auth.append(idx)
 
     if idx_types_auth is not None and len(idx_types_auth) > 0:
-        idx_type_keys_auth.extend(idx_types_auth)
-
-    logger.debug(' After permission check-name ' + str(idx_keys_auth))
-    logger.debug(' After permission check-type ' + str(idx_type_keys_auth))
+        for idx in idx_types_auth:
+            if idx not in idx_type_keys_auth:
+                idx_type_keys_auth.append(idx)
 
     return (idx_keys_auth, idx_type_keys_auth)
 
@@ -64,7 +69,8 @@ def _check_content_type_perms(idx_model_names, user):
         try:
             content_type = ContentType.objects.get(model=model_name.lower(), app_label=app_name)
         except:
-            logger.debug('Content type not found for ' + str(model_name))
+            pass
+            # logger.debug('Content type not found for ' + str(model_name))
 
         permissions = None
         if content_type:

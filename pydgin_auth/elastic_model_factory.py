@@ -136,12 +136,12 @@ class ElasticPermissionModelFactory():
                     if 'auth_public' not in idx_type_values or idx_type_values['auth_public'] is False:
                         idx_type_keys_private.append(idx_key + '.' + idx_type_key)
 
-        logger.debug('**********PUBLIC IDX and IDX TYPES**************')
-        logger.debug(idx_keys_public)
-        logger.debug(idx_type_keys_public)
-        logger.debug('**********PRIVATE IDX and IDX TYPES**************')
-        logger.debug(idx_keys_private)
-        logger.debug(idx_type_keys_private)
+        # logger.debug('**********PUBLIC IDX and IDX TYPES**************')
+        # logger.debug(idx_keys_public)
+        # logger.debug(idx_type_keys_public)
+        # logger.debug('**********PRIVATE IDX and IDX TYPES**************')
+        # logger.debug(idx_keys_private)
+        # logger.debug(idx_type_keys_private)
 
         if auth_public:
             # make case insensitive
