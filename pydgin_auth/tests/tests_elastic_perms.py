@@ -169,12 +169,12 @@ class PydginAuthElasticTestCase(TestCase):
         self.assertIn('GENE.GENE', idx_type_keys_auth)
 
         # pass just one index key and index type and check for returned keys and types
-        # publication idx is publica and publication.publication is private
+        # publication idx is public and publication.publication is private
         idx_keys = ['PUBLICATION']
         idx_type_keys = ['PUBLICATION.PUBLICATION']
         idx_keys_auth = []
         idx_type_keys_auth = []
-        (idx_keys_auth, idx_type_keys_auth) = get_authenticated_idx_and_idx_types(dil_user,
+        (idx_keys_auth, idx_type_keys_auth) = get_authenticated_idx_and_idx_types(self.user,
                                                                                   idx_keys=idx_keys,
                                                                                   idx_type_keys=idx_type_keys)
         self.assertIn('PUBLICATION', idx_keys_auth)
