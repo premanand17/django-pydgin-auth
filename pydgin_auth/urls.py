@@ -3,11 +3,16 @@ from django.conf.urls import url
 from django.contrib import admin
 import django.contrib.auth.views
 import pydgin_auth.views
+from django.conf import settings
 admin.autodiscover()
 
+try:
+    base_html_dir = settings.BASE_HTML_DIR
+except AttributeError:
+    base_html_dir = ''
 
 # Registration URLs
-urlpatterns = [url(r'^login/$',  django.contrib.auth.views.login),
+urlpatterns = [url(r'^login/$',  django.contrib.auth.views.login, {"extra_context": {"basehtmldir": base_html_dir}}),
                url(r'^logout/$', django.contrib.auth.views.logout, {'next_page': '/'}),
                url(r'^profile/$',  pydgin_auth.views.profile),
                url(r'^permission_denied/$',  pydgin_auth.views.permission_denied),
@@ -17,8 +22,10 @@ urlpatterns = [url(r'^login/$',  django.contrib.auth.views.login),
                    {'post_reset_redirect': '/accounts/user/password/reset/done/',
                     'template_name': 'registration/admin/password_reset_form.html',
                     'email_template_name': 'registration/admin/password_reset_email.html',
-                    'subject_template_name': 'registration/admin/password_reset_subject.txt'},
-                   name="password_reset"),
+                    'subject_template_name': 'registration/admin/password_reset_subject.txt'
+                    },
+                   name="password_reset",
+                   ),
                url(r'^user/password/reset/done/$', django.contrib.auth.views.password_reset_done,
                    {'template_name': 'registration/admin/password_reset_done.html'}),
                url(r'^user/password/reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
