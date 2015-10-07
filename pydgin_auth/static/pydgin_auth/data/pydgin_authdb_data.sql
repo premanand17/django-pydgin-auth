@@ -15,7 +15,7 @@ SET search_path = public, pg_catalog;
 --
 
 COPY auth_group (id, name) FROM stdin;
-4	CURATOR
+3	CURATOR
 2	DIL
 1	READ
 \.
@@ -38,22 +38,22 @@ SELECT pg_catalog.setval('auth_group_id_seq', coalesce(max("id"), 1), max("id") 
 -- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: prem
 --
 
-COPY auth_permission (id, name, codename, content_type_id) FROM stdin;
-31	Can read only	can_read	9
-32	Can read auth test data	can_read	10
-33	Can read curate data	can_read_curate	10
-\.
+-- COPY auth_permission (name, codename, content_type_id) FROM stdin;
+-- 31	Can read only	can_read	9
+-- 32	Can read auth test data	can_read	10
+-- 33	Can read curate data	can_read_curate	10
+-- \.
 
 
 --
 -- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: prem
 --
 
-COPY auth_group_permissions (id, group_id, permission_id) FROM stdin;
-4	4	33
-6	2	32
-15	1	31
-\.
+-- COPY auth_group_permissions (id, group_id, permission_id) FROM stdin;
+-- 3	3	33
+-- 6	2	32
+-- 15	1	31
+-- \.
 
 
 --
@@ -93,7 +93,7 @@ COPY auth_user (id, password, last_login, is_superuser, username, first_name, la
 COPY auth_user_groups (id, user_id, group_id) FROM stdin;
 2	3	1
 8	6	1
-9	6	4
+9	6	3
 10	5	1
 11	5	2
 15	10	1
