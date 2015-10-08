@@ -96,7 +96,7 @@ class ElasticPermissionModelFactory():
     def autoregister(cls, app_label=PERMISSION_MODEL_APP_NAME):
         '''auto register all the models belonging to the given app eg: elastic'''
         for model_ct in ContentType.objects.filter(app_label=app_label):
-            print('Model names : ' + model_ct.model)
+
             model = None
             try:
                 model = apps.get_model(app_label=app_label, model_name=model_ct.model.lower())
@@ -105,7 +105,7 @@ class ElasticPermissionModelFactory():
                 If you are here, then content type exists, and model doesn't exists
                 Means, you have changed an idx from private to public
                 '''
-                logger.warn('Model not found for ' + model_ct.model.lower())
+                # logger.warn('Model not found for ' + model_ct.model.lower())
                 model_name = model_ct.model.lower()
                 model, created = create_elastic_index_model(model_name,  # @UnusedVariable
                                                             cls.PERMISSION_MODEL_APP_NAME)
