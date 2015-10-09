@@ -46,10 +46,11 @@ class PydginAuthTestCase(TestCase):
         response = self.client.get('/accounts/register/', follow=True)
         # check if redirected to registration page
         self.assertTemplateUsed(response, 'registration/registration_form.html')
-        self.client.post('/accounts/register/',
-                         {'username': 'new_user', 'email': 'newuser@new.com',
-                          'password1': 'newtest', 'password2': 'newtest'})
+        response = self.client.post('/accounts/register/',
+                                    {'username': 'new_user', 'email': 'newuser@new.com',
+                                     'password1': 'newtest', 'password2': 'newtest'})
         self.assertEqual(response.status_code, 200)
+
         users = User.objects.all()
         user_present = False
         for user in users:
@@ -59,10 +60,10 @@ class PydginAuthTestCase(TestCase):
 
         self.assertFalse(user_present, "new_user not in Users before is_terms_agreed")
 
-        self.client.post('/accounts/register/',
-                         {'username': 'new_user', 'email': 'newuser@new.com',
-                          'password1': 'newtest', 'password2': 'newtest', 'is_terms_agreed': '1'})
-        self.assertEqual(response.status_code, 200)
+        response = self.client.post('/accounts/register/',
+                                    {'username': 'new_user', 'email': 'newuser@new.com',
+                                     'password1': 'newtest', 'password2': 'newtest', 'is_terms_agreed': '1'})
+
         users = User.objects.all()
         for user in users:
             if user.username == 'new_user':
@@ -70,6 +71,15 @@ class PydginAuthTestCase(TestCase):
                 break
 
         self.assertTrue(user_present, "new_user in Users list after is_terms_agreed")
+
+        # try to create user with same user name
+        response = self.client.post('/accounts/register/',
+                                    {'username': 'new_user', 'email': 'newuser@new.com',
+                                     'password1': 'newtest', 'password2': 'newtest', 'is_terms_agreed': '1'})
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, 'User with this Email address already exists')
+        self.assertContains(response, 'A user with that username already exists')
 
     def test_create_groups(self):
         '''Test if we get back the READ group without creating it (created is false)
