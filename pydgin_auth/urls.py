@@ -11,10 +11,11 @@ try:
 except AttributeError:
     base_html_dir = ''
 
+
 # Registration URLs
 urlpatterns = [url(r'^login/$',  django.contrib.auth.views.login, {"extra_context": {"basehtmldir": base_html_dir}}),
                url(r'^logout/$', django.contrib.auth.views.logout, {'next_page': '/'}),
-               url(r'^profile/$',  pydgin_auth.views.profile),
+               url(r'^profile/$',  pydgin_auth.views.profile, {"extra_context": {"basehtmldir": base_html_dir}}),
                url(r'^permission_denied/$',  pydgin_auth.views.permission_denied),
                url(r'^register/$', pydgin_auth.views.register),
                url(r'^register/complete/$', pydgin_auth.views.registration_complete),
@@ -22,7 +23,8 @@ urlpatterns = [url(r'^login/$',  django.contrib.auth.views.login, {"extra_contex
                    {'post_reset_redirect': '/accounts/user/password/reset/done/',
                     'template_name': 'registration/admin/password_reset_form.html',
                     'email_template_name': 'registration/admin/password_reset_email.html',
-                    'subject_template_name': 'registration/admin/password_reset_subject.txt'
+                    'subject_template_name': 'registration/admin/password_reset_subject.txt',
+                    'extra_context': {"basehtmldir": base_html_dir},
                     },
                    name="password_reset",
                    ),
