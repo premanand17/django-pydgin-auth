@@ -57,9 +57,9 @@ SELECT pg_catalog.setval('auth_permission_id_seq', coalesce(max("id"), 1), max("
 --
 
 COPY auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-5	pbkdf2_sha256$20000$oGNfCvP92wP6$kp32dEh7L34czRF+t4e7cZ4JgXEn4GhvBn3rIY1crnE=	2015-08-04 17:20:32.689239+01	f	prem_dil			prem.apa@gmail.com	f	t	2015-07-22 13:09:28+01
-3	pbkdf2_sha256$20000$T02Ktf3IpbhF$2ZiXuYHYAtNiLQkrmiiZUwJmPsb4mtGV4kzc/+5WVAE=	2015-08-05 09:26:56.360424+01	f	prem_ro			prem.apa@gmail.com	f	t	2015-07-22 11:33:35.424898+01
-6	pbkdf2_sha256$20000$Ba1MF9jdjCLF$WuC075BcgzkrAf4ShVGgZO6FviNYlnfEngOF4za9L6k=	2015-07-30 15:16:57.951831+01	f	prem_curator			prem.apa@gmail.com	f	t	2015-07-22 13:10:15+01
+5	pbkdf2_sha256$20000$oGNfCvP92wP6$kp32dEh7L34czRF+t4e7cZ4JgXEn4GhvBn3rIY1crnE=	2015-08-04 17:20:32.689239+01	f	prem_dil			prem.dil@dummy.xxx	f	t	2015-07-22 13:09:28+01
+3	pbkdf2_sha256$20000$T02Ktf3IpbhF$2ZiXuYHYAtNiLQkrmiiZUwJmPsb4mtGV4kzc/+5WVAE=	2015-08-05 09:26:56.360424+01	f	prem_ro			prem.ro@dummy.xxx	f	t	2015-07-22 11:33:35.424898+01
+6	pbkdf2_sha256$20000$Ba1MF9jdjCLF$WuC075BcgzkrAf4ShVGgZO6FviNYlnfEngOF4za9L6k=	2015-07-30 15:16:57.951831+01	f	prem_curator			prem.cur@dummy.xxx	f	t	2015-07-22 13:10:15+01
 10	pbkdf2_sha256$20000$Wi2WC2wYikwm$oDDuxs9iLOSw+F5PGouyMmN6vib37jafNgotOD9IOcw=	2015-07-31 14:18:28.307727+01	f	dummyuser			dummy@dummy.com	f	t	2015-07-31 14:18:28.194449+01
 11	pbkdf2_sha256$20000$StXVdtds49Of$wHQLXChZs/5SauBZHhboaVjoFHlYx7+0h16ih04LK1M=	2015-07-31 14:20:53.518653+01	f	testuser			test@testmail.com	f	t	2015-07-31 14:20:53.413251+01
 1	pbkdf2_sha256$20000$WB0wuebUGDZT$RDeQG/w6ahCfEZ8pUaIsFbz0KLa1l3uM48s6uUPPhCY=	2015-08-04 16:38:40.12695+01	t	admin			premanand.achuthan@cimr.cam.ac.uk	t	t	2015-07-22 11:15:09.182062+01
