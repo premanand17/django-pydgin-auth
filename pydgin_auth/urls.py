@@ -15,7 +15,7 @@ except AttributeError:
 # Registration URLs
 urlpatterns = [url(r'^login/$',  django.contrib.auth.views.login, {"extra_context": {"basehtmldir": base_html_dir}}),
                url(r'^logout/$', django.contrib.auth.views.logout, {'next_page': '/'}),
-               url(r'^profile/$',  pydgin_auth.views.profile),
+               url(r'^profile/$',  pydgin_auth.views.profile, {"extra_context": {"basehtmldir": base_html_dir}}),
                url(r'^permission_denied/$',  pydgin_auth.views.permission_denied),
                url(r'^register/$', pydgin_auth.views.register),
                url(r'^register/complete/$', pydgin_auth.views.registration_complete),
