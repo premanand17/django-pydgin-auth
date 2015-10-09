@@ -25,7 +25,7 @@ def permission_denied(request):
 
 
 @login_required(login_url='/accounts/login/')
-def profile(request):
+def profile(request, extra_context=None):
     '''renders user profile page'''
     try:
         token = Token.objects.get_or_create(user=request.user)
@@ -33,9 +33,17 @@ def profile(request):
         logging.debug('Exception while creating tokens')
         pass
 
-    # context = RequestContext(request, {'request': request, 'user': request.user, 'api_key': token})
     request_context = RequestContext(request)
     request_context.push({"api_key": token})
+
+    if extra_context is not None:
+        request_context.update(extra_context)
+
+    group_list = request.user.groups.values_list('name', flat=True)
+    print(group_list)
+
+    request_context.push({"groups": group_list})
+
     return render(request, 'registration/profile.html', context_instance=request_context)
 
 
@@ -44,7 +52,7 @@ def registration_complete(request):
     return render(request, 'registration/registration_form_complete.html')
 
 
-def register(request):
+def register(request, extra_context=None):
     '''register a new user after agreeing to terms and condition'''
     # read the terms and conditions file
     curr_path = os.path.dirname(os.path.realpath(__file__))
