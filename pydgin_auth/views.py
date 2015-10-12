@@ -11,7 +11,17 @@ from django.contrib.auth.decorators import login_required
 from rest_framework.authtoken.models import Token
 import logging
 from django.conf import settings
+from django.contrib.auth import views as auth_views
 logger = logging.getLogger(__name__)
+
+
+def login_user(request, template_name='registration/login.html', extra_context=None):
+    '''intercepts the login call and delegates to auth login '''
+    if 'remember_me' in request.POST:
+        request.session.set_expiry(1209600)  # 2 weeks
+
+    response = auth_views.login(request, template_name)
+    return response
 
 
 def login_home(request):
