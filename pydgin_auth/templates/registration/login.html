@@ -26,7 +26,7 @@
         <p>The username and password provided is not valid/recognised. Please try again with valid credentials.</p>
     {% endif %}
 
-	<form id="login_form" method="POST" action="{% url 'accounts:django.contrib.auth.views.login' %}">
+	<form id="login_form" method="POST" action="{% url 'accounts:pydgin_auth.views.login_user' %}">
      {% csrf_token %}
         <table>
             <tr>
