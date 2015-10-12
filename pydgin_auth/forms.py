@@ -8,10 +8,11 @@ class PydginUserCreationForm(UserCreationForm):
     '''£xtended user form with is_terms_agreed field'''
     is_terms_agreed = forms.BooleanField(label="Terms and conditions", required=True)
     email = forms.EmailField(label="Email address", max_length=254, required=True)
+    is_active = False
 
     class Meta:
         model = User
-        fields = ("username", "email", "password1", "password2", "is_terms_agreed")
+        fields = ("username", "email", "password1", "password2", "is_terms_agreed", "is_active")
 
     def save(self, commit=True):
         if not commit:

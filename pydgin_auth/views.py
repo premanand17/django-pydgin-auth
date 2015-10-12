@@ -20,7 +20,7 @@ def login_user(request, template_name='registration/login.html', extra_context=N
     if 'remember_me' in request.POST:
         request.session.set_expiry(1209600)  # 2 weeks
 
-    response = auth_views.login(request, template_name)
+    response = auth_views.login(request, template_name=template_name, extra_context=extra_context)
     return response
 
 
