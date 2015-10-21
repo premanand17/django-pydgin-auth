@@ -2,6 +2,9 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from pydgin_auth.models import UserProfile
+from django.contrib.auth.tokens import default_token_generator
+import datetime
+from django.utils import timezone
 
 
 class PydginUserCreationForm(UserCreationForm):
@@ -18,6 +21,11 @@ class PydginUserCreationForm(UserCreationForm):
         if not commit:
             raise NotImplementedError("Can't create User and UserProfile without database save")
         user = super(PydginUserCreationForm, self).save(commit=True)
-        user_profile = UserProfile(user=user, is_terms_agreed=self.cleaned_data['is_terms_agreed'])
+        token = default_token_generator.make_token(user)
+        date_expires = timezone.now() + datetime.timedelta(2)
+
+        user_profile = UserProfile(user=user,
+                                   is_terms_agreed=self.cleaned_data['is_terms_agreed'],
+                                   activation_key=token, key_expires=date_expires)
         user_profile.save()
         return user_profile
