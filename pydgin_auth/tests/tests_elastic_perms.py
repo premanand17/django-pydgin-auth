@@ -184,6 +184,28 @@ class PydginAuthElasticTestCase(TestCase):
 
         self.assertTrue(len(idx_keys_auth) == 1, 'Got back only one idx')
 
+        # pass only one idx_keys and one idx type keys
+        idx_keys = ['PUBLICATION']
+        idx_keys_auth = []
+        idx_type_keys_auth = []
+        (idx_keys_auth, idx_type_keys_auth) = get_authenticated_idx_and_idx_types(self.user,
+                                                                                  idx_keys=idx_keys,
+                                                                                  )
+        self.assertIn('PUBLICATION', idx_keys_auth)
+        self.assertTrue(len(idx_keys_auth) == 1, 'Got back only one idx')
+        self.assertTrue(len(idx_type_keys_auth) == 3, 'Got back 3 idx types')
+
+        # pass only one idx type keys and idx keys
+        idx_type_keys = ['MARKER.MARKER', 'PUBLICATION.PUBLICATION']
+        idx_keys_auth = []
+        idx_type_keys_auth = []
+        (idx_keys_auth, idx_type_keys_auth) = get_authenticated_idx_and_idx_types(self.user,
+                                                                                  idx_type_keys=idx_type_keys,
+                                                                                  )
+        self.assertTrue(len(idx_keys_auth) == 3, 'Got back only one idx')
+        # as publication is private and we have passed the regular user this is right
+        self.assertTrue(len(idx_type_keys_auth) == 1, 'Got back 0 idx types')
+
     @override_settings(ELASTIC=OVERRIDE_SETTINGS_CHICP)
     def test_elastic_model_names_round_trip(self):
 
