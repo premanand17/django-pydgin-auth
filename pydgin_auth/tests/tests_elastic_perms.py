@@ -278,7 +278,7 @@ class PydginAuthElasticTestCase(TestCase):
         self.assertTrue("dil" in group_names, "DIL group present")
 
         # retrieves all docs with missing field group_name - 11 docs
-        terms_filter = TermsFilter.get_missing_terms_filter("field", "group_name")
+        terms_filter = TermsFilter.get_missing_terms_filter("field", "attr.group_name")
         query = ElasticQuery.filtered(Query.match_all(), terms_filter)
         elastic = Search(query, idx=self.index_name)
         docs = elastic.search().docs
@@ -294,7 +294,7 @@ class PydginAuthElasticTestCase(TestCase):
         docs = elastic.search().docs
         self.assertTrue(len(docs) == 12, "Elastic string query retrieved both public + private regions")
 
-        terms_filter = TermsFilter.get_terms_filter("group_name", group_names)
+        terms_filter = TermsFilter.get_terms_filter("attr.group_name", group_names)
         query = ElasticQuery.filtered(Query.match_all(), terms_filter)
         elastic = Search(query, idx=self.index_name)
         docs = elastic.search().docs
