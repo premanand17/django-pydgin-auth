@@ -56,7 +56,8 @@ OVERRIDE_SETTINGS_CHICP = \
 
 
 OVERRIDE_SETTINGS_PYDGIN = \
-    {'default': {
+    {
+     'default': {
         'ELASTIC_URL': ElasticSettings.url(),
         'IDX': {
             'GENE': {
@@ -99,6 +100,6 @@ OVERRIDE_SETTINGS_PYDGIN = \
         },
         'TEST': 'auto_tests',
         'REPOSITORY': 'my_backup',
-        'TEST_REPO_DIR': '/ipswich/data/pydgin/elastic/repos/test_snapshot/',
-    }
+        'TEST_REPO_DIR': '/tmp',
+     }
     }
